@@ -1,0 +1,18 @@
+### Node ###
+
+# Logs
+logs
+yarn-debug.log*
+yarn-error.log*
+
+# Compiled binary
+dist/
+
+# Dependency directories
+node_modules/
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env
