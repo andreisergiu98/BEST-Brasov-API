@@ -1,8 +1,18 @@
+import Koa from 'koa';
+
 class App {
+    app: Koa;
+    
     constructor() {
-        console.log('test')
+        this.app = new Koa();
+
+        this.app.use(async ctx => {
+            ctx.body = 'Hello World';
+        });
+
+        this.app.listen(8081);
     }
 }
 
-export default new App()
+export default new App();
 
