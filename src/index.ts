@@ -8,15 +8,6 @@ class App {
     app: Koa;
 
     constructor() {
-        this.app = new Koa();
-
-        this.app.use(async ctx => {
-            ctx.body = 'Hello Docker!';
-        });
-
-        this.app.listen(port);
-        console.log(`Server is running on port ${port}`);
-
         mongoose.connect(`mongodb://${mongoUrl}`, {
             useNewUrlParser: true
         }).then(() => {
@@ -24,6 +15,24 @@ class App {
         }).catch(e => {
             console.log('Couldn\'t connect to the database: ' + e);
         })
+
+        this.app = new Koa();
+
+        this.app.use(async (ctx, next) => {
+            await next();
+            const rt = ctx.response.get('X-Response-Time');
+            console.log(`${ctx.method} ${ctx.url} - ${rt}`);
+        });
+
+        this.app.use(async (ctx, next) => {
+            const start = Date.now();
+            await next();
+            const ms = Date.now() - start;
+            ctx.set('X-Response-Time', `${ms}ms`);
+          });
+
+        this.app.listen(port);
+        console.log(`Server is running on port ${port}`);
     }
 }
 
