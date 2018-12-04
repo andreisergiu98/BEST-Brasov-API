@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   node:
-    container_name: api
+    container_name: dev_api
     image: node:10.14.0-alpine
     working_dir: /home/node/app
     ports:
@@ -16,11 +16,8 @@ services:
     command: "yarn start"
 
   mongo:
-    container_name: mongo
-    image: mongo:4.1.5-xenial
+    container_name: dev_mongo
+    image: mongo:4.0.4-xenial
     restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: development
-    expose:
-      - 27017
+    ports:
+      - 27017:27017
