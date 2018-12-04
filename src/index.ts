@@ -2,8 +2,8 @@ import Koa from 'koa';
 import logger from 'koa-logger';
 import bodyparser from 'koa-bodyparser';
 
-import Db from './core/db';
-import router from './routes';
+import db from './core/db';
+import routes from './routes';
 
 const port = 8081;
 const mongoUrl = 'mongo:27017/dashboard';
@@ -12,7 +12,7 @@ class App {
     app: Koa;
 
     constructor() {
-        Db.connect(`mongodb://${mongoUrl}`);
+        db.connect(`mongodb://${mongoUrl}`);
 
         this.app = new Koa();
 
@@ -20,7 +20,7 @@ class App {
 
         this.app.use(bodyparser());
 
-        this.app.use(router);
+        this.app.use(routes);
 
         this.app.listen(port);
         console.log(`Server is running on port ${port}`);
