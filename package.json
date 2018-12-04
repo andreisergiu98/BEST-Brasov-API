@@ -4,16 +4,22 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "yarn run build:live",
+    "start": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
     "build": "tsc -p .",
-    "build:live": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts"
+    "start:docker": "docker-compose up -d"
   },
   "dependencies": {
     "koa": "^2.6.1",
+    "koa-bodyparser": "^4.2.1",
+    "koa-logger": "^3.2.0",
+    "koa-router": "^7.4.0",
     "mongoose": "^5.3.14"
   },
   "devDependencies": {
     "@types/koa": "^2.0.46",
+    "@types/koa-bodyparser": "^4.2.1",
+    "@types/koa-logger": "^3.1.1",
+    "@types/koa-router": "^7.0.35",
     "@types/mongodb": "^3.1.15",
     "@types/mongoose": "^5.3.2",
     "@types/node": "^10.12.3",
