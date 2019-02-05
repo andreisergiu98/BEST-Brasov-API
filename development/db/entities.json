@@ -1,0 +1,84 @@
+[
+  {
+    "name": "Comp name 1",
+    "city": "Brasov",
+    "address": "Happy street 1",
+    "categories": [
+      "Coffee",
+      "Food"
+    ],
+    "phoneNumbers": [
+      {
+        "phone": "07123456123",
+        "info": "Number"
+      },
+      {
+        "phone": "07123456123",
+        "info": "Number"
+      }
+    ],
+    "emailAddresses": [
+      {
+        "address": "test@test.com",
+        "info": "This is an email address"
+      },
+      {
+        "address": "test2@test.com",
+        "info": "This is an email address"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Test Person1",
+        "position": "HR",
+        "email": [
+          "hr@test.ro"
+        ],
+        "phone": [
+          "0323123123"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Comp name 2",
+    "city": "Brasov",
+    "address": "Happy street 2",
+    "categories": [
+      "Test",
+      "Test2"
+    ],
+    "phoneNumbers": [
+      {
+        "phone": "07123456123",
+        "info": "Number"
+      },
+      {
+        "phone": "07123456123",
+        "info": "Number"
+      }
+    ],
+    "emailAddresses": [
+      {
+        "address": "test@test.com",
+        "info": "This is an email address"
+      },
+      {
+        "address": "test2@test.com",
+        "info": "This is an email address"
+      }
+    ],
+    "contacts": [
+      {
+        "name": "Test Person1",
+        "position": "HR",
+        "email": [
+          "hr@test.ro"
+        ],
+        "phone": [
+          "0323123123"
+        ]
+      }
+    ]
+  }
+]
