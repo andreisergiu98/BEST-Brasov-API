@@ -3,13 +3,15 @@ import mongoose from 'mongoose';
 class Db {
     static connection = mongoose.connection;
 
-    static async connect(url: string) {
+    static connect(url: string) {
+        mongoose.set('useCreateIndex', true);
+
         let db = Db.connection;
 
         const config = {
             useNewUrlParser: true,
             autoReconnect: true
-        }        
+        };
 
         db.on('connecting', function () {
             console.log('Connecting to Mongo...');
