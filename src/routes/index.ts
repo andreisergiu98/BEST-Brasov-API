@@ -1,10 +1,14 @@
 import Router from 'koa-router';
+import * as user from './user';
+import * as entity from './entity';
+
 const router: Router = new Router();
 
-import * as tests from './tests'
+// User requests
+router.get('/user/:id', user.getById);
+router.get('/users', user.getAllUsers);
 
-router.get('/getTest', tests.getTest);
-
-router.post('/postTest', tests.postTest);
+// Entity requests
+router.get('/entities', entity.getAllEntities);
 
 export default router.routes();
