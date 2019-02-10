@@ -16,7 +16,7 @@ export const EntitySchema = new Schema({
     address: String,
     categories: [String],
     phoneNumbers: [{phone: String, info: String}],
-    emailAddresses: [{address: String, info: String}],
+    emailAddresses: [{email: String, info: String}],
     contacts: [{name: String, position: String, email: [String], phoneNumbers: [String]}],
 });
 

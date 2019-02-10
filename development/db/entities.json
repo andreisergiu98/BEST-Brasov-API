@@ -9,21 +9,21 @@
     ],
     "phoneNumbers": [
       {
-        "phone": "07123456123",
+        "phone": "0730123123",
         "info": "Number"
       },
       {
-        "phone": "07123456123",
+        "phone": "0730123123",
         "info": "Number"
       }
     ],
     "emailAddresses": [
       {
-        "address": "test@test.com",
+        "email": "test@test.com",
         "info": "This is an email address"
       },
       {
-        "address": "test2@test.com",
+        "email": "test2@test.com",
         "info": "This is an email address"
       }
     ],
@@ -50,21 +50,21 @@
     ],
     "phoneNumbers": [
       {
-        "phone": "07123456123",
+        "phone": "0730123123",
         "info": "Number"
       },
       {
-        "phone": "07123456123",
+        "phone": "0730123123",
         "info": "Number"
       }
     ],
     "emailAddresses": [
       {
-        "address": "test@test.com",
+        "email": "test@test.com",
         "info": "This is an email address"
       },
       {
-        "address": "test2@test.com",
+        "email": "test2@test.com",
         "info": "This is an email address"
       }
     ],
