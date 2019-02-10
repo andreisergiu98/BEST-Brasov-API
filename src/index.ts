@@ -1,6 +1,7 @@
 import Koa from 'koa';
 import logger from 'koa-logger';
 import bodyparser from 'koa-bodyparser';
+import cors from '@koa/cors';
 
 import db from './core/db';
 import routes from './routes';
@@ -21,6 +22,8 @@ class App {
         this.app.use(logger());
 
         this.app.use(bodyparser());
+
+        this.app.use(cors());
 
         this.app.use(routes);
 
