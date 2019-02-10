@@ -1,7 +1,9 @@
-import User from '../models/user';
+import Koa from 'koa';
 import mongoose from "mongoose";
 
-export const getById = async (ctx: any, next: Function) => {
+import User from '../models/user';
+
+export const getById = async (ctx: Koa.Context, next: Function) => {
     if (!mongoose.Types.ObjectId.isValid(ctx.params.id)) {
         ctx.throw(400, 'Invalid data!');
     }
@@ -19,7 +21,7 @@ export const getById = async (ctx: any, next: Function) => {
     }
 };
 
-export const getAllUsers = async (ctx: any, next: Function) => {
+export const getAllUsers = async (ctx: Koa.Context, next: Function) => {
     try {
         let response = await User.find({});
         ctx.status = 200;

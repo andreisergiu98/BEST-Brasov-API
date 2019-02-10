@@ -1,7 +1,9 @@
-import Entity from "../models/entity";
+import Koa from 'koa';
 import mongoose from "mongoose";
 
-export const getById = async (ctx: any, next: Function) => {
+import Entity from "../models/entity";
+
+export const getById = async (ctx: Koa.Context, next: Function) => {
     if (!mongoose.Types.ObjectId.isValid(ctx.params.id)) {
         ctx.throw(400, 'Invalid data!');
     }
@@ -19,7 +21,7 @@ export const getById = async (ctx: any, next: Function) => {
     }
 };
 
-export const getAllEntities = async (ctx: any, next: Function) => {
+export const getAllEntities = async (ctx: Koa.Context, next: Function) => {
     try {
         let response = await Entity.find({});
         ctx.status = 200;
