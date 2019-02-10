@@ -4,11 +4,11 @@ import Entity from '../models/entity';
 import fs from 'fs';
 import path from 'path';
 
-export const init = () => {
+export const init = (): void => {
     loadDbSeed()
 };
 
-const loadDbSeed = () => {
+const loadDbSeed = (): void => {
     let users = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../development/db/users.json'), 'utf8'));
     let entities = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../development/db/entities.json'), 'utf8'));
 

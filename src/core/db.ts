@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 class Db {
     static connection = mongoose.connection;
 
-    static connect(url: string) {
+    static connect(url: string): void {
         mongoose.set('useCreateIndex', true);
 
         let db = Db.connection;
