@@ -5,9 +5,10 @@ export interface IEntity extends Document {
     city?: string;
     address?: string;
     categories?: [string];
+    website?: string;
     phoneNumbers?: [object];
     emailAddresses?: [object];
-    contacts?: [object];
+    numberOfCalls?: number
 }
 
 export const EntitySchema = new Schema({
@@ -15,9 +16,10 @@ export const EntitySchema = new Schema({
     city: String,
     address: String,
     categories: [String],
+    website: String,
     phoneNumbers: [{phone: String, info: String}],
     emailAddresses: [{email: String, info: String}],
-    contacts: [{name: String, position: String, email: [String], phoneNumbers: [String]}],
+    numberOfCalls: Number
 });
 
 const Entity = model<IEntity>('Entity', EntitySchema);
