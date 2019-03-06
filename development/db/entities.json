@@ -7,6 +7,7 @@
       "Coffee",
       "Food"
     ],
+    "website": "https://www.test.test",
     "phoneNumbers": [
       {
         "phone": "0730123123",
@@ -27,18 +28,7 @@
         "info": "This is an email address"
       }
     ],
-    "contacts": [
-      {
-        "name": "Test Person1",
-        "position": "HR",
-        "email": [
-          "hr@test.ro"
-        ],
-        "phone": [
-          "0323123123"
-        ]
-      }
-    ]
+    "numberOfCalls": 5
   },
   {
     "name": "Comp name 2",
@@ -48,6 +38,7 @@
       "Test",
       "Test2"
     ],
+    "website": "https://www.test.test",
     "phoneNumbers": [
       {
         "phone": "0730123123",
@@ -68,17 +59,6 @@
         "info": "This is an email address"
       }
     ],
-    "contacts": [
-      {
-        "name": "Test Person1",
-        "position": "HR",
-        "email": [
-          "hr@test.ro"
-        ],
-        "phone": [
-          "0323123123"
-        ]
-      }
-    ]
+    "numberOfCalls": 1
   }
 ]

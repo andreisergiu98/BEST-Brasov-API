@@ -2,7 +2,7 @@
   {
     "name": "Name1 LastName1",
     "email": "test@test.ro",
-    "phone": "0123123312",
+    "phone": "0730123123",
     "birthDate": "12-23-1992",
     "joinDate": "12-23-1992",
     "generation": "MahGeneration"
@@ -18,7 +18,7 @@
   {
     "name": "Name3 LastName3",
     "email": "test3@test.ro",
-    "phone": "0123123312",
+    "phone": "0730123123",
     "birthDate": "12-23-1992",
     "joinDate": "12-23-1992",
     "generation": "MahGeneration"
