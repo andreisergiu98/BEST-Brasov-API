@@ -1,21 +1,22 @@
 [
   {
-    "name": "Comp name 1",
+    "name": "Food delivery",
     "city": "Brasov",
     "address": "Happy street 1",
     "categories": [
       "Coffee",
-      "Food"
+      "Food",
+      "Catering"
     ],
     "website": "https://www.test.test",
     "phoneNumbers": [
       {
         "phone": "0730123123",
-        "info": "Number"
+        "info": "Phone Number 1"
       },
       {
         "phone": "0730123123",
-        "info": "Number"
+        "info": "Long text test text test, the quick brown fox jumps over the lazy dog, lorem ipsum :/"
       }
     ],
     "emailAddresses": [
@@ -31,32 +32,31 @@
     "numberOfCalls": 5
   },
   {
-    "name": "Comp name 2",
+    "name": "Softworks",
     "city": "Brasov",
     "address": "Happy street 2",
     "categories": [
-      "Test",
-      "Test2"
+      "Software & Hardware"
     ],
     "website": "https://www.test.test",
     "phoneNumbers": [
       {
         "phone": "0730123123",
-        "info": "Number"
+        "info": "Secretary"
       },
       {
         "phone": "0730123123",
-        "info": "Number"
+        "info": "CEO"
       }
     ],
     "emailAddresses": [
       {
         "email": "test@test.com",
-        "info": "This is an email address"
+        "info": "Secretary"
       },
       {
         "email": "test2@test.com",
-        "info": "This is an email address"
+        "info": "CEO"
       }
     ],
     "numberOfCalls": 1
