@@ -3,8 +3,10 @@ import logger from 'koa-logger';
 import bodyparser from 'koa-bodyparser';
 import cors from '@koa/cors';
 
+import {catchError, logError} from './middlewares/error';
 import db from './core/db';
 import routes from './routes';
+
 
 const port = 8081;
 const mongoUrl = 'mongo:27017/dashboard';
@@ -20,6 +22,9 @@ class App {
         this.app = new Koa();
 
         this.app.use(logger());
+
+        this.app.use(catchError);
+        this.app.on('error', logError);
 
         this.app.use(bodyparser());
 
