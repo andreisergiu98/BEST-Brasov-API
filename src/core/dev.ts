@@ -1,30 +1,41 @@
-import User from '../models/user';
-import Entity from '../models/entity';
-
 import fs from 'fs';
 import path from 'path';
 
+import User, {IUser} from '../models/user';
+import Entity, {IEntity} from '../models/entity';
+import Category, {ICategory} from "../models/category";
+
 export const init = (): void => {
-    loadDbSeed()
+    loadDbSeed().then().catch(e => {
+        console.log(e);
+    })
 };
 
-const loadDbSeed = (): void => {
-    let users = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../development/db/users.json'), 'utf8'));
-    let entities = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../development/db/entities.json'), 'utf8'));
+const loadDbSeed = async () => {
+    let users: IUser[] = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../development/db/users.json'), 'utf8'));
+    let entities: IEntity[] = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../development/db/entities.json'), 'utf8'));
+    let categories: ICategory[] = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../development/db/categories.json'), 'utf8'));
 
-    User.deleteMany({}).then(res => {
-        User.insertMany(users).then(res => {
-            console.log('DB: Users inserted!');
-        }).catch(e => {
-            console.log(e)
-        });
-    });
+    await User.deleteMany({});
+    await User.insertMany(users);
 
-    Entity.deleteMany({}).then(res => {
-        Entity.insertMany(entities).then(res => {
-            console.log('DB: Entities inserted!');
-        }).catch(e => {
-            console.log(e)
-        });
-    });
+    await Category.deleteMany({});
+    await Category.insertMany(categories);
+
+    for (let i = 0; i < entities.length; i++) {
+        let categories: string[] = [];
+
+        for (let j = 0; j < (entities[i].categories || []).length; j++) {
+            // @ts-ignore
+            let res = await Category.findOne({name: entities[i].categories[j]});
+            if (res != null)
+                categories.push(res._id);
+        }
+
+        // @ts-ignore
+        entities[i].categories = categories;
+    }
+
+    await Entity.deleteMany({});
+    await Entity.insertMany(entities);
 };
