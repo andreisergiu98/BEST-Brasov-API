@@ -1,16 +1,21 @@
 import Router from 'koa-router';
 
-import * as user from './user';
-import * as entity from './entity';
+import * as users from './users';
+import * as entities from './entities';
+import * as categories from './categories';
 
 const router: Router = new Router();
 
 // User requests
-router.get('/user/:id', user.getById);
-router.get('/users', user.getAllUsers);
+router.get('/user/:id', users.getById);
+router.get('/users', users.getAll);
 
 // Entity requests
-router.get('/entity/:id', entity.getById);
-router.get('/entities', entity.getAllEntities);
+router.get('/entity/:id', entities.getById);
+router.get('/entities', entities.getAll);
+
+
+//Category requests
+router.get('/entity-categories', categories.getAll);
 
 export default router.routes();
