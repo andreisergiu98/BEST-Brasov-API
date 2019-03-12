@@ -10,7 +10,8 @@ class Db {
 
         const config = {
             useNewUrlParser: true,
-            autoReconnect: true
+            autoReconnect: true,
+            useFindAndModify: false
         };
 
         db.on('connecting', function () {
