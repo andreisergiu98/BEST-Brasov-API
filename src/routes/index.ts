@@ -13,7 +13,8 @@ router.get('/users', users.getAll);
 // Entity requests
 router.get('/entity/:id', entities.getById);
 router.get('/entities', entities.getAll);
-router.post('/entity/update', entities.update);
+router.put('/entity/update', entities.update);
+router.post('/entity/create', entities.create);
 
 //Category requests
 router.get('/entity-categories', categories.getAll);
