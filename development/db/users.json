@@ -5,7 +5,8 @@
     "phone": "0730123123",
     "birthDate": "12-23-1992",
     "joinDate": "12-23-1992",
-    "generation": "MahGeneration"
+    "generation": "MahGeneration",
+    "status": "MDV"
   },
   {
     "name": "Name2 LastName2",
