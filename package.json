@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
     "build": "tsc -p .",
-    "start:docker": "docker-compose up -d"
+    "docker:start": "docker-compose down && docker-compose up -d && docker logs dev_api --follow"
   },
   "dependencies": {
     "@koa/cors": "2",
