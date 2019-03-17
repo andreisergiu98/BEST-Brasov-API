@@ -7,15 +7,15 @@ import * as meetings from './meetings';
 const router: Router = new Router();
 
 // User requests
-router.get('/users/:id', users.getById);
 router.get('/users', users.getAll);
+router.get('/users/:id', users.getById);
 
 // Entity requests
-router.get('/entities/:id', entities.getById);
 router.get('/entities', entities.getAll);
-router.put('/entities/update', entities.update);
-router.post('/entities/create', entities.create);
 router.get('/entities/categories', entities.getCategories);
+router.get('/entities/:id', entities.getById);
+router.put('/entities', entities.update);
+router.post('/entities', entities.create);
 
 
 //Meetings requests
