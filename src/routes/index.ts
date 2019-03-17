@@ -7,7 +7,7 @@ import * as meetings from './meetings';
 const router: Router = new Router();
 
 // User requests
-router.get('/user/:id', users.getById);
+router.get('/users/:id', users.getById);
 router.get('/users', users.getAll);
 
 // Entity requests
