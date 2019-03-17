@@ -15,7 +15,7 @@ export const EntitySchema = new Schema({
     name: {type: String, required: true},
     city: String,
     address: String,
-    categories: [{type: Schema.Types.ObjectId, ref: 'Category', autopopulate: true}],
+    categories: [{type: Schema.Types.ObjectId, ref: 'EntityCategory', autopopulate: true}],
     website: String,
     phoneNumbers: [{phone: String, info: String}],
     emailAddresses: [{email: String, info: String}],

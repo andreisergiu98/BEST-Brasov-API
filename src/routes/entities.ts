@@ -2,7 +2,7 @@ import Koa from 'koa';
 import mongoose from "mongoose";
 
 import Entity from "../models/entity";
-import Category from "../models/category";
+import EntityCategory from "../models/entityCategory";
 
 export const getAll = async (ctx: Koa.Context, next: Function) => {
     ctx.body = await Entity.find({});
@@ -52,13 +52,18 @@ export const create = async (ctx: Koa.Context, next: Function) => {
 };
 
 
+export const getCategories = async (ctx: Koa.Context, next: Function) => {
+    ctx.body = await EntityCategory.find({});
+    ctx.status = 200;
+};
+
 const updateCategories = async (categories: any) => {
     let preprocessedCategories = [];
     for (let i = 0; i < categories.length; i++) {
         if (mongoose.Types.ObjectId.isValid(categories[i]._id)) {
             preprocessedCategories.push(categories[i]._id);
         } else {
-            let res = await Category.insertMany([{name: categories[i].name}]);
+            let res = await EntityCategory.insertMany([{name: categories[i].name}]);
             preprocessedCategories.push(res[0]._id);
         }
     }
