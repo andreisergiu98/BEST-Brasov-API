@@ -1,12 +1,13 @@
 [
   {
+    "_id": "5c8e2ba2590a48574bd0f3b8",
     "name": "Food delivery",
     "city": "Brasov",
     "address": "Happy street 1",
     "categories": [
-      "Coffee",
-      "Food",
-      "Catering"
+      "5c8e2b7d00a5837d1c2afbbc",
+      "5c8e2b91e6e51ea25625515a",
+      "5c8e2b6b83f5677e091c693f"
     ],
     "website": "https://www.test.test",
     "phoneNumbers": [
@@ -32,11 +33,12 @@
     "numberOfCalls": 5
   },
   {
+    "_id": "5c8e2babeef2a4d3b01f0739",
     "name": "Softworks",
     "city": "Brasov",
     "address": "Happy street 2",
     "categories": [
-      "Software & Hardware"
+      "5c8e2b8b489a8d41e24a2d24"
     ],
     "website": "https://www.test.test",
     "phoneNumbers": [

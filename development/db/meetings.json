@@ -1,0 +1,33 @@
+[
+  {
+    "_id": "5c8e2bc140a501c8ac1cb585",
+    "facilitator": "5c8e2be22cbdd3269af0a816",
+    "name": "Sedinta generala",
+    "date": "15 sep 2018",
+    "tags": [
+      "sg"
+    ],
+    "participants": [
+      "5c8e2bde08ae1f448d0176e7",
+      "5c8e2beae12198fa09decfca"
+    ],
+    "pendingApproval": [
+      "5c8e2be63139067714245614"
+    ]
+  },
+  {
+    "_id": "5c8e2bc579fba740efa02852",
+    "facilitator": "5c8e2be63139067714245614",
+    "name": "Sedinta generala",
+    "date": "15 sep 2018",
+    "tags": [
+      "sg"
+    ],
+    "participants": [
+      "5c8e2beae12198fa09decfca"
+    ],
+    "pendingApproval": [
+      "5c8e2bde08ae1f448d0176e7"
+    ]
+  }
+]
