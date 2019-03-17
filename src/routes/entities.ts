@@ -45,8 +45,10 @@ export const create = async (ctx: Koa.Context, next: Function) => {
     let data = ctx.request.body;
     data.categories = await updateCategories(data.categories);
     data._id = null;
-    await Entity.insertMany([data]);
+
+    let res = await Entity.insertMany([data]);
     ctx.status = 201;
+    ctx.body = {_id: res[0]._id};
 };
 
 
