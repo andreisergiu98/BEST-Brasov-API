@@ -8,7 +8,7 @@ export interface IEntity extends Document {
     website?: string;
     phoneNumbers?: [object];
     emailAddresses?: [object];
-    numberOfCalls?: number
+    numberOfCalls?: number;
 }
 
 export const EntitySchema = new Schema({
