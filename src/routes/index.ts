@@ -3,6 +3,7 @@ import Router from 'koa-router';
 import * as users from './users';
 import * as entities from './entities';
 import * as categories from './categories';
+import * as meetings from './meetings';
 
 const router: Router = new Router();
 
@@ -18,5 +19,9 @@ router.post('/entity/create', entities.create);
 
 //Category requests
 router.get('/entity-categories', categories.getAll);
+
+
+//Meetings requests
+router.get('/meetings', meetings.getAll);
 
 export default router.routes();
