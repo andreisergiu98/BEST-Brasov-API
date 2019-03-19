@@ -16,7 +16,7 @@ export const MeetingSchema = new Schema({
     tags: [{type: String}],
     participants: [{type: Schema.Types.ObjectId, ref: 'User', autopopulate: true}],
     pendingApproval: [{type: Schema.Types.ObjectId, ref: 'User', autopopulate: true}],
-});
+}, {timestamps: true});
 
 MeetingSchema.plugin(require('mongoose-autopopulate'));
 
