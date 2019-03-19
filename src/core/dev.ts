@@ -1,9 +1,10 @@
 import fs from 'fs';
 import path from 'path';
 
+import Comment, {IComment} from "../models/comment";
 import User, {IUser} from '../models/user';
 import Entity, {IEntity} from '../models/entity';
-import EntityCategory, {IEntityCategory} from "../models/entityCategory";
+import EntityCategory, {IEntityCategory} from "../models/entity-category";
 import Meeting, {IMeeting} from "../models/meeting";
 
 export const init = (): void => {
@@ -20,6 +21,9 @@ const loadDbSeed = async () => {
 
     await User.deleteMany({});
     await User.insertMany(users);
+
+    await Comment.deleteMany({});
+    await Comment.insertMany([]);
 
     await EntityCategory.deleteMany({});
     await EntityCategory.insertMany(categories);
