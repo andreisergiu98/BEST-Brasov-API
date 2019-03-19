@@ -1,8 +1,10 @@
 import Koa from 'koa';
 import mongoose from "mongoose";
 
-import Entity from "../models/entity";
-import EntityCategory from "../models/entityCategory";
+import Entity, {IEntity} from "../models/entity";
+import EntityCategory from "../models/entity-category";
+import Comment from "../models/comment";
+import User from "../models/user";
 
 export const getAll = async (ctx: Koa.Context, next: Function) => {
     ctx.body = await Entity.find({});
@@ -21,7 +23,6 @@ export const getById = async (ctx: Koa.Context, next: Function) => {
     } else {
         ctx.throw(404);
     }
-
 };
 
 export const update = async (ctx: Koa.Context, next: Function) => {
@@ -51,9 +52,45 @@ export const create = async (ctx: Koa.Context, next: Function) => {
     ctx.body = {_id: res[0]._id};
 };
 
-
 export const getCategories = async (ctx: Koa.Context, next: Function) => {
     ctx.body = await EntityCategory.find({});
+    ctx.status = 200;
+};
+
+export const addComment = async (ctx: Koa.Context, next: Function) => {
+    let data = ctx.request.body;
+
+    if (!mongoose.Types.ObjectId.isValid(data._id)) {
+        ctx.throw(404);
+        return;
+    }
+
+    let entity = await Entity.findById(data._id);
+
+    if (entity == null) {
+        ctx.throw(404);
+        return;
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(data.comment.userId)) {
+        ctx.throw(400);
+    }
+
+    let user = await User.findById(data.comment.userId);
+    if (user == null) {
+        ctx.throw(400);
+    }
+
+    let comments = await Comment.insertMany([{user, value: data.comment.value}]);
+
+    if (entity.comments == null) {
+        entity.comments = [comments[0]._id];
+    } else {
+        entity.comments.push(comments[0]._id)
+    }
+
+    await Entity.findByIdAndUpdate(entity._id, entity);
+    ctx.body = comments[0];
     ctx.status = 200;
 };
 

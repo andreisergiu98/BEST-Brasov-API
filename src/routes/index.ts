@@ -13,10 +13,10 @@ router.get('/users/:id', users.getById);
 // Entity requests
 router.get('/entities', entities.getAll);
 router.get('/entities/categories', entities.getCategories);
+router.post('/entities/comments', entities.addComment);
 router.get('/entities/:id', entities.getById);
 router.put('/entities', entities.update);
 router.post('/entities', entities.create);
-
 
 //Meetings requests
 router.get('/meetings', meetings.getAll);
