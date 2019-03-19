@@ -6,7 +6,7 @@ export interface IEntityCategory extends Document {
 
 export const CategorySchema = new Schema({
     name: {type: String, required: true, unique: true}
-});
+}, {timestamps: true});
 
 const EntityCategory = model<IEntityCategory>('EntityCategory', CategorySchema);
 export default EntityCategory;
