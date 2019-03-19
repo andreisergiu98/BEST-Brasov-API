@@ -9,6 +9,7 @@ export interface IEntity extends Document {
     phoneNumbers?: [object];
     emailAddresses?: [object];
     numberOfCalls?: number;
+    comments?: [string];
 }
 
 export const EntitySchema = new Schema({
@@ -19,8 +20,9 @@ export const EntitySchema = new Schema({
     website: String,
     phoneNumbers: [{phone: String, info: String}],
     emailAddresses: [{email: String, info: String}],
-    numberOfCalls: Number
-});
+    numberOfCalls: Number,
+    comments: [{type: Schema.Types.ObjectId, ref: 'Comment', autopopulate: true}]
+}, {timestamps: true});
 
 EntitySchema.plugin(require('mongoose-autopopulate'));
 
