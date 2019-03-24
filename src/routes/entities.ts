@@ -1,7 +1,7 @@
 import Koa from 'koa';
 import mongoose from "mongoose";
 
-import Entity, {IEntity} from "../models/entity";
+import Entity from "../models/entity";
 import EntityCategory, {IEntityCategory} from "../models/entity-category";
 import Comment from "../models/comment";
 import User from "../models/user";
