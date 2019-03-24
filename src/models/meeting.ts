@@ -1,12 +1,13 @@
 import {Document, Schema, model} from "mongoose";
+import {IUser} from "./user";
 
 export interface IMeeting extends Document {
-    facilitator: string;
+    facilitator: IUser | string;
     name: string;
     date: string;
     tags: [string];
-    participants: [string];
-    pendingApproval: [string];
+    participants: [IUser | string];
+    pendingApproval: [IUser | string];
 }
 
 export const MeetingSchema = new Schema({

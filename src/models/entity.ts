@@ -1,15 +1,17 @@
 import {Document, Schema, model} from "mongoose";
+import {IEntityCategory} from "./entity-category";
+import {IComment} from "./comment";
 
 export interface IEntity extends Document {
     name: string;
     city?: string;
     address?: string;
-    categories?: [string];
+    categories?: [IEntityCategory | string];
     website?: string;
-    phoneNumbers?: [object];
-    emailAddresses?: [object];
+    phoneNumbers?: [{ phone: string, info: string }];
+    emailAddresses?: [{ email: string, info: string }];
     numberOfCalls?: number;
-    comments?: [string];
+    comments?: [IComment | string];
 }
 
 export const EntitySchema = new Schema({
@@ -24,7 +26,7 @@ export const EntitySchema = new Schema({
     comments: [{type: Schema.Types.ObjectId, ref: 'Comment', autopopulate: true}]
 }, {timestamps: true});
 
-EntitySchema.plugin(require('mongoose-autopopulate'));
+EntitySchema.plugin(require('mongoose-autopopulate')); 
 
 const Entity = model<IEntity>('Entity', EntitySchema);
 export default Entity;

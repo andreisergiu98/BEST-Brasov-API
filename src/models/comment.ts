@@ -1,8 +1,9 @@
 import {Document, Schema, model} from "mongoose";
+import {IUser} from "./user";
 
 export interface IComment extends Document {
     value: string;
-    user: object;
+    user: IUser | string;
 }
 
 export const CommentSchema = new Schema({
