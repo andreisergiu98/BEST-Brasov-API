@@ -8,7 +8,9 @@ export const getById = async (ctx: Koa.Context, next: Function) => {
         ctx.throw(404);
     }
 
-    let response = await User.findById(ctx.params.id);
+    let {query} = ctx.query;
+
+    let response = await User.findById(ctx.params.id).populate(query.populate || '');
     if (response) {
         ctx.status = 200;
         ctx.body = response;
@@ -18,6 +20,8 @@ export const getById = async (ctx: Koa.Context, next: Function) => {
 };
 
 export const getAll = async (ctx: Koa.Context, next: Function) => {
-    ctx.body = await User.find({});
+    let {query} = ctx.query;
+
+    ctx.body = await User.find({}).populate(query.populate || '');
     ctx.status = 200;
 };
