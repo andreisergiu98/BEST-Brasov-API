@@ -1,11 +1,13 @@
 import fs from 'fs';
 import path from 'path';
 
-import Comment, {IComment} from "../models/comment";
+import Comment from "../models/comment";
 import User, {IUser} from '../models/user';
 import Entity, {IEntity} from '../models/entity';
 import EntityCategory, {IEntityCategory} from "../models/entity-category";
 import Meeting, {IMeeting} from "../models/meeting";
+import CallingSession from "../models/calling-session";
+import Event from "../models/event";
 
 export const init = (): void => {
     loadDbSeed().then().catch(e => {
@@ -33,4 +35,10 @@ const loadDbSeed = async () => {
 
     await Meeting.deleteMany({});
     await Meeting.insertMany(meetings);
+
+    await CallingSession.deleteMany({});
+    await CallingSession.insertMany([]);
+
+    await Event.deleteMany({});
+    await Event.insertMany([]);
 };
