@@ -23,10 +23,10 @@ export const EntitySchema = new Schema({
     phoneNumbers: [{phone: String, info: String}],
     emailAddresses: [{email: String, info: String}],
     numberOfCalls: Number,
-    comments: [{type: Schema.Types.ObjectId, ref: 'Comment', autopopulate: true}]
+    comments: [{type: Schema.Types.ObjectId, ref: 'Comment'}]
 }, {timestamps: true});
 
-EntitySchema.plugin(require('mongoose-autopopulate')); 
+EntitySchema.plugin(require('mongoose-autopopulate'));
 
 const Entity = model<IEntity>('Entity', EntitySchema);
 export default Entity;

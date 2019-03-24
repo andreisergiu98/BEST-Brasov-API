@@ -2,12 +2,14 @@ import Koa from 'koa';
 import mongoose from "mongoose";
 
 import Entity, {IEntity} from "../models/entity";
-import EntityCategory from "../models/entity-category";
+import EntityCategory, {IEntityCategory} from "../models/entity-category";
 import Comment from "../models/comment";
 import User from "../models/user";
 
 export const getAll = async (ctx: Koa.Context, next: Function) => {
-    ctx.body = await Entity.find({});
+    let {query} = ctx;
+
+    ctx.body = await Entity.find({}).populate(query.populate || '');
     ctx.status = 200;
 };
 
@@ -16,7 +18,9 @@ export const getById = async (ctx: Koa.Context, next: Function) => {
         ctx.throw(404);
     }
 
-    let response = await Entity.findById(ctx.params.id);
+    let {query} = ctx;
+
+    let response = await Entity.findById(ctx.params.id).populate(query.populate || '');
     if (response) {
         ctx.status = 200;
         ctx.body = response;
@@ -84,9 +88,9 @@ export const addComment = async (ctx: Koa.Context, next: Function) => {
     let comments = await Comment.insertMany([{user, value: data.comment.value}]);
 
     if (entity.comments == null) {
-        entity.comments = [comments[0]._id];
+        entity.comments = [comments[0]];
     } else {
-        entity.comments.push(comments[0]._id)
+        entity.comments.push(comments[0])
     }
 
     await Entity.findByIdAndUpdate(entity._id, entity);
@@ -94,7 +98,7 @@ export const addComment = async (ctx: Koa.Context, next: Function) => {
     ctx.status = 200;
 };
 
-const updateCategories = async (categories: any) => {
+const updateCategories = async (categories: IEntityCategory[]) => {
     let preprocessedCategories = [];
     for (let i = 0; i < categories.length; i++) {
         if (mongoose.Types.ObjectId.isValid(categories[i]._id)) {

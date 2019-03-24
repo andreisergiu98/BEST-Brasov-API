@@ -11,15 +11,13 @@ export interface IMeeting extends Document {
 }
 
 export const MeetingSchema = new Schema({
-    facilitator: {type: Schema.Types.ObjectId, required: true, ref: 'User', autopopulate: true},
+    facilitator: {type: Schema.Types.ObjectId, required: true, ref: 'User'},
     name: {type: String, required: true},
     date: {type: String},
     tags: [{type: String}],
-    participants: [{type: Schema.Types.ObjectId, ref: 'User', autopopulate: true}],
-    pendingApproval: [{type: Schema.Types.ObjectId, ref: 'User', autopopulate: true}],
+    participants: [{type: Schema.Types.ObjectId, ref: 'User'}],
+    pendingApproval: [{type: Schema.Types.ObjectId, ref: 'User'}],
 }, {timestamps: true});
-
-MeetingSchema.plugin(require('mongoose-autopopulate'));
 
 const Meeting = model<IMeeting>('Meeting', MeetingSchema);
 export default Meeting;
