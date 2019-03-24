@@ -1,0 +1,11 @@
+[
+  {
+    "_id": "5c97bcc71f2e13939c57f8d4",
+    "name": "Hackathon",
+    "coordinator": "5c8e2be22cbdd3269af0a816",
+    "date": {
+      "start": "15 May 2019",
+      "end": "17 May 2019"
+    }
+  }
+]
