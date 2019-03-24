@@ -7,7 +7,8 @@
     "birthDate": "12-23-1992",
     "joinDate": "12-23-1992",
     "generation": "MahGeneration",
-    "status": "MDV"
+    "status": "MDV",
+    "meetings": ["5c8e2bc140a501c8ac1cb585"]
   },
   {
     "_id": "5c8e2be22cbdd3269af0a816",
@@ -34,6 +35,7 @@
     "phone": "0123123312",
     "birthDate": "12-23-1992",
     "joinDate": "12-23-1992",
-    "generation": "MahGeneration"
+    "generation": "MahGeneration",
+    "meetings": ["5c8e2bc140a501c8ac1cb585", "5c8e2bc579fba740efa02852"]
   }
 ]
