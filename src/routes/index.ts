@@ -31,4 +31,4 @@ router.get('/events/:id', events.getById);
 router.get('/calling-sessions', callingSessions.getAll);
 router.get('/calling-sessions/:id', callingSessions.getById);
 
-export default router.routes();
+export const routes = router.routes();

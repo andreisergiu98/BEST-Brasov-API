@@ -1,5 +1,5 @@
-import {Document, Schema, model} from "mongoose";
-import {IMeeting} from "./meeting";
+import {Document, Schema, model} from 'mongoose';
+import {IMeeting} from './meeting';
 
 export interface IUser extends Document {
     email: string;
@@ -22,7 +22,7 @@ export const UserSchema: Schema = new Schema({
     birthDate: String,
     joinDate: String,
     generation: String,
-    meetings: [{type: Schema.Types.ObjectId, ref: 'Meeting'}]
+    meetings: [{type: Schema.Types.ObjectId, ref: 'Meeting'}],
 }, {timestamps: true});
 
 const User = model<IUser>('User', UserSchema);

@@ -1,5 +1,5 @@
-import {Document, Schema, model} from "mongoose";
-import {IUser} from "./user";
+import {Document, Schema, model} from 'mongoose';
+import {IUser} from './user';
 
 export interface IComment extends Document {
     value: string;

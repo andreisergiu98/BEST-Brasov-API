@@ -1,7 +1,7 @@
-import {Document, Schema, model} from "mongoose";
-import {IEvent} from "./event";
-import {IUser} from "./user";
-import {IEntity} from "./entity";
+import {Document, Schema, model} from 'mongoose';
+import {IEvent} from './event';
+import {IUser} from './user';
+import {IEntity} from './entity';
 
 export interface ICallingSession extends Document {
     event?: IEvent | string;
@@ -10,20 +10,20 @@ export interface ICallingSession extends Document {
     entities: [{
         entity: IEntity | string;
         explicit: boolean;
-        assigned: IUser | string;
+        assigned?: IUser | string;
         status: string;
         lastUpdate: Date;
-    }]
+    }];
     date: {
         start: Date,
         end: Date
-    }
+    };
     links: {
         booklet?: string;
         phoneTemplate?: string;
         emailTemplate?: string;
         sponsorshipTemplate?: string;
-    }
+    };
 }
 
 export const CallingSessionSchema = new Schema({
@@ -33,20 +33,20 @@ export const CallingSessionSchema = new Schema({
     entities: [{
         entity: {type: Schema.Types.ObjectId, required: true, ref: 'Entity'},
         explicit: Boolean,
-        assigned: {type: Schema.Types.ObjectId, required: true, ref: 'User'},
+        assigned: {type: Schema.Types.ObjectId, ref: 'User'},
         status: String,
-        lastUpdate: Date
+        lastUpdate: Date,
     }],
     date: {
         start: Date,
-        end: Date
+        end: Date,
     },
     links: {
         booklet: String,
         phoneTemplate: String,
         emailTemplate: String,
         sponsorshipTemplate: String,
-    }
+    },
 }, {timestamps: true});
 
 const CallingSession = model<ICallingSession>('CallingSession', CallingSessionSchema);

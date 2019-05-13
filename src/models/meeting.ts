@@ -1,5 +1,5 @@
-import {Document, Schema, model} from "mongoose";
-import {IUser} from "./user";
+import {Document, Schema, model} from 'mongoose';
+import {IUser} from './user';
 
 export interface IMeeting extends Document {
     facilitator: IUser | string;

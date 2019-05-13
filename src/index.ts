@@ -4,9 +4,8 @@ import bodyparser from 'koa-bodyparser';
 import cors from '@koa/cors';
 
 import {catchError, logError} from './middlewares/error';
-import db from './core/db';
-import routes from './routes';
-
+import {db} from './core/db';
+import {routes} from './routes';
 
 const port = 8081;
 const mongoUrl = 'mongo:27017/dashboard';
@@ -17,9 +16,11 @@ class App {
     app: Koa;
 
     constructor() {
-        db.connect(`mongodb://${mongoUrl}`);
-
         this.app = new Koa();
+    }
+
+    init() {
+        db.connect(`mongodb://${mongoUrl}`);
 
         this.app.use(logger());
 
@@ -41,4 +42,5 @@ class App {
     }
 }
 
-export default new App();
+const app = new App();
+app.init();

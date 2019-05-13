@@ -1,11 +1,11 @@
-import {Document, Schema, model} from "mongoose";
+import {Document, Schema, model} from 'mongoose';
 
 export interface IEntityCategory extends Document {
     name: string;
 }
 
 export const CategorySchema = new Schema({
-    name: {type: String, required: true, unique: true}
+    name: {type: String, required: true, unique: true},
 }, {timestamps: true});
 
 const EntityCategory = model<IEntityCategory>('EntityCategory', CategorySchema);

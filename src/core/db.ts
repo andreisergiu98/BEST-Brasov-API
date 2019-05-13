@@ -1,41 +1,41 @@
 import mongoose from 'mongoose';
 
 class Db {
-    static connection = mongoose.connection;
+    connection = mongoose.connection;
 
-    static connect(url: string): void {
+    connect(url: string): void {
         mongoose.set('useCreateIndex', true);
 
-        let db = Db.connection;
+        const db = this.connection;
 
         const config = {
             useNewUrlParser: true,
             autoReconnect: true,
-            useFindAndModify: false
+            useFindAndModify: false,
         };
 
-        db.on('connecting', function () {
+        db.on('connecting', () => {
             console.log('Connecting to Mongo...');
         });
 
-        db.on('error', function (error) {
+        db.on('error', (error) => {
             console.error(`Error in Mongo connection: ${error}`);
             mongoose.disconnect();
         });
 
-        db.on('connected', function () {
+        db.on('connected', () => {
             console.log('Mongo connected!');
         });
 
-        db.once('open', function () {
+        db.once('open', () => {
             console.log('Mongo connection opened!');
         });
 
-        db.on('reconnected', function () {
+        db.on('reconnected', () => {
             console.log('Mongo reconnected!');
         });
 
-        db.on('disconnected', function () {
+        db.on('disconnected', () => {
             console.log('Mongo disconnected!');
 
             // Wait 2 seconds and try to reconnect to the database
@@ -48,4 +48,4 @@ class Db {
     }
 }
 
-export default Db;
+export const db = new Db();

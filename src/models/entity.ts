@@ -1,6 +1,6 @@
-import {Document, Schema, model} from "mongoose";
-import {IEntityCategory} from "./entity-category";
-import {IComment} from "./comment";
+import {Document, Schema, model} from 'mongoose';
+import {IEntityCategory} from './entity-category';
+import {IComment} from './comment';
 
 export interface IEntity extends Document {
     name: string;
@@ -23,7 +23,7 @@ export const EntitySchema = new Schema({
     phoneNumbers: [{phone: String, info: String}],
     emailAddresses: [{email: String, info: String}],
     numberOfCalls: Number,
-    comments: [{type: Schema.Types.ObjectId, ref: 'Comment'}]
+    comments: [{type: Schema.Types.ObjectId, ref: 'Comment'}],
 }, {timestamps: true});
 
 EntitySchema.plugin(require('mongoose-autopopulate'));

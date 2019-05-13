@@ -1,6 +1,6 @@
-import {Document, Schema, model} from "mongoose";
-import {IUser} from "./user";
-import {ICallingSession} from "./calling-session";
+import {Document, Schema, model} from 'mongoose';
+import {IUser} from './user';
+import {ICallingSession} from './calling-session';
 
 export interface IEvent extends Document {
     name: string;
@@ -25,17 +25,17 @@ export const EventSchema = new Schema({
     coordinator: {type: Schema.Types.ObjectId, ref: 'User', required: true},
     coreTeam: [{
         user: {type: Schema.Types.ObjectId, ref: 'User'},
-        role: String
+        role: String,
     }],
     usefulLinks: [{
         description: String,
-        link: String
+        link: String,
     }],
     callingSession: {type: Schema.Types.ObjectId, ref: 'CallingSession'},
     date: {
         starts: Date,
-        ends: Date
-    }
+        ends: Date,
+    },
 }, {timestamps: true});
 
 const Event = model<IEvent>('Event', EventSchema);
