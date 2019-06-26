@@ -10,6 +10,6 @@ export const catchError = async (ctx: Koa.Context, next: Function) => {
     }
 };
 
-export const logError = (err: Error, ctx: Koa.Context) => {
+export const logError = (err: Error) => {
     console.log(err);
 };
