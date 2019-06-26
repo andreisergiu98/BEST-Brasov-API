@@ -1,23 +1,36 @@
-import {Document, Schema, model} from 'mongoose';
-import {IUser} from './user';
+import {arrayProp, prop, Ref, Typegoose} from 'typegoose';
 
-export interface IMeeting extends Document {
-    facilitator: IUser | string;
-    name: string;
-    date: string;
-    tags: [string];
-    participants: [IUser | string];
-    pendingApproval: [IUser | string];
+import {User} from './user';
+import mongoose, {Types} from 'mongoose';
+
+export class Meeting extends Typegoose {
+    _id!: Types.ObjectId;
+
+    createdAt!: Date;
+
+    updatedAt!: Date;
+
+    @prop({required: true, ref: 'User'})
+    facilitator!: Ref<User>;
+
+    @prop({required: true})
+    name!: string;
+
+    @prop()
+    date?: string;
+
+    @prop({default: []})
+    tags!: [string];
+
+    @arrayProp({itemsRef: 'User'})
+    participants!: [Ref<User>];
+
+    @arrayProp({itemsRef: 'User'})
+    pendingApproval!: [Ref<User>];
 }
 
-export const MeetingSchema = new Schema({
-    facilitator: {type: Schema.Types.ObjectId, required: true, ref: 'User'},
-    name: {type: String, required: true},
-    date: {type: String},
-    tags: [{type: String}],
-    participants: [{type: Schema.Types.ObjectId, ref: 'User'}],
-    pendingApproval: [{type: Schema.Types.ObjectId, ref: 'User'}],
-}, {timestamps: true});
-
-const Meeting = model<IMeeting>('Meeting', MeetingSchema);
-export default Meeting;
+// tslint:disable-next-line:variable-name
+export const MeetingModel = new Meeting().getModelForClass(Meeting, {
+    schemaOptions: {timestamps: true},
+    existingMongoose: mongoose,
+});

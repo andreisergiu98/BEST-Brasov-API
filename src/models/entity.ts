@@ -1,32 +1,72 @@
-import {Document, Schema, model} from 'mongoose';
-import {IEntityCategory} from './entity-category';
-import {IComment} from './comment';
+import {EntityCategory} from './entity-category';
+import {arrayProp, prop, Ref, Typegoose} from 'typegoose';
+import mongoose, {Types} from 'mongoose';
+import {User} from './user';
 
-export interface IEntity extends Document {
-    name: string;
-    city?: string;
-    address?: string;
-    categories?: [IEntityCategory | string];
-    website?: string;
-    phoneNumbers?: [{ phone: string, info: string }];
-    emailAddresses?: [{ email: string, info: string }];
-    numberOfCalls?: number;
-    comments?: [IComment | string];
+export class PhoneNumber {
+    @prop()
+    phone!: string;
+
+    @prop()
+    info!: string;
 }
 
-export const EntitySchema = new Schema({
-    name: {type: String, required: true},
-    city: String,
-    address: String,
-    categories: [{type: Schema.Types.ObjectId, ref: 'EntityCategory', autopopulate: true}],
-    website: String,
-    phoneNumbers: [{phone: String, info: String}],
-    emailAddresses: [{email: String, info: String}],
-    numberOfCalls: Number,
-    comments: [{type: Schema.Types.ObjectId, ref: 'Comment'}],
-}, {timestamps: true});
+export class EmailAddress {
+    @prop()
+    email!: string;
 
-EntitySchema.plugin(require('mongoose-autopopulate'));
+    @prop()
+    info!: string;
+}
 
-const Entity = model<IEntity>('Entity', EntitySchema);
-export default Entity;
+export class Comment {
+    @prop()
+    text!: string;
+
+    @prop({default: new Date()})
+    date!: Date;
+
+    @prop({ref: 'User'})
+    user!: Ref<User>;
+}
+
+export class Entity extends Typegoose {
+    _id!: Types.ObjectId;
+
+    createdAt!: Date;
+
+    updatedAt!: Date;
+
+    @prop({required: true})
+    name!: string;
+
+    @prop()
+    city?: string;
+
+    @prop()
+    address?: string;
+
+    @prop()
+    website?: string;
+
+    @prop({default: 0})
+    numberOfCalls!: number;
+
+    @arrayProp({items: PhoneNumber, default: []})
+    phoneNumbers?: [Ref<PhoneNumber>];
+
+    @arrayProp({items: EmailAddress, default: []})
+    emailAddresses?: [Ref<EmailAddress>];
+
+    @arrayProp({items: Comment, default: []})
+    comments!: [Ref<Comment>];
+
+    @arrayProp({itemsRef: EntityCategory, default: []})
+    categories!: [Ref<EntityCategory>];
+}
+
+// tslint:disable-next-line:variable-name
+export const EntityModel = new Entity().getModelForClass(Entity, {
+    schemaOptions: {timestamps: true},
+    existingMongoose: mongoose,
+});

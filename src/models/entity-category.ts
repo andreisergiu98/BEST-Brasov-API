@@ -1,12 +1,19 @@
-import {Document, Schema, model} from 'mongoose';
+import {prop, Typegoose} from 'typegoose';
+import mongoose, {Types} from 'mongoose';
 
-export interface IEntityCategory extends Document {
-    name: string;
+export class EntityCategory extends Typegoose {
+    _id!: Types.ObjectId;
+
+    createdAt!: Date;
+
+    updatedAt!: Date;
+
+    @prop({required: true, unique: true})
+    name!: string;
 }
 
-export const CategorySchema = new Schema({
-    name: {type: String, required: true, unique: true},
-}, {timestamps: true});
-
-const EntityCategory = model<IEntityCategory>('EntityCategory', CategorySchema);
-export default EntityCategory;
+// tslint:disable-next-line:variable-name
+export const EntityCategoryModel = new EntityCategory().getModelForClass(EntityCategory, {
+    schemaOptions: {timestamps: true},
+    existingMongoose: mongoose,
+});
