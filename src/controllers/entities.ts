@@ -1,29 +1,35 @@
 import Koa from 'koa';
 
-import {BaseController} from './base-controller';
+import {Controller, action} from '../lib/controller';
 
 import {EntityCategoryModel, EntityCategory} from '../models/entity-category';
 import {UserModel} from '../models/user';
 import {EntityModel} from '../models/entity';
 
-export class EntitiesController extends BaseController {
-    private populate = ['categories'];
+export class EntitiesController extends Controller {
+    constructor() {
+        super();
 
-    getAll = async (ctx: Koa.Context) => {
-        const query = this.validateQueryParams(ctx.query);
+        this.autoPopulate = ['categories'];
+    }
 
-        ctx.body = await EntityModel.find(query.conditions).populate([...this.populate, ...query.populate]).lean();
+    @action()
+    async getAll(ctx: Koa.Context) {
+        const {query} = ctx.state;
+
+        ctx.body = await EntityModel.find().populate([...this.autoPopulate, ...query.populate]).lean();
         ctx.status = 200;
-    };
+    }
 
-    getById = async (ctx: Koa.Context) => {
+    @action()
+    async getById(ctx: Koa.Context) {
         if (!this.isObjectIdValid(ctx.params.id)) {
             ctx.throw(404);
         }
 
-        const query = this.validateQueryParams(ctx.query);
+        const {query} = ctx.state;
 
-        const entity = await EntityModel.findById(ctx.params.id).populate([...this.populate, ...query.populate]).lean();
+        const entity = await EntityModel.findById(ctx.params.id).populate([...this.autoPopulate, ...query.populate]).lean();
 
         if (entity) {
             ctx.status = 200;
@@ -31,9 +37,10 @@ export class EntitiesController extends BaseController {
         } else {
             ctx.throw(404);
         }
-    };
+    }
 
-    updateOne = async (ctx: Koa.Context) => {
+    @action()
+    async updateOne(ctx: Koa.Context) {
         const data = ctx.request.body;
         data.categories = await this.updateCategories(data.categories);
 
@@ -49,9 +56,10 @@ export class EntitiesController extends BaseController {
         } else {
             ctx.throw(400);
         }
-    };
+    }
 
-    createOne = async (ctx: Koa.Context) => {
+    @action({parseQuery: false})
+    async createOne(ctx: Koa.Context) {
         const data = ctx.request.body;
 
         data.categories = await this.updateCategories(data.categories);
@@ -60,14 +68,16 @@ export class EntitiesController extends BaseController {
         const entity = await EntityModel.insertMany([data]);
         ctx.status = 201;
         ctx.body = entity[0];
-    };
+    }
 
-    getCategories = async (ctx: Koa.Context) => {
+    @action({parseQuery: false})
+    async getCategories(ctx: Koa.Context) {
         ctx.body = await EntityCategoryModel.find({});
         ctx.status = 200;
-    };
+    }
 
-    addComment = async (ctx: Koa.Context) => {
+    @action({parseQuery: false})
+    async addComment(ctx: Koa.Context) {
         const data = ctx.request.body as { _id: string, comment: any };
 
         if (!this.isObjectIdValid(data._id)) {
@@ -96,7 +106,7 @@ export class EntitiesController extends BaseController {
 
         ctx.body = entity.comments[0];
         ctx.status = 200;
-    };
+    }
 
     updateCategories = async (categories: EntityCategory[]) => {
         const existingCategories = [];

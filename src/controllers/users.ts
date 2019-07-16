@@ -1,21 +1,24 @@
 import Koa from 'koa';
 
-import {BaseController} from './base-controller';
+import {Controller, action} from '../lib/controller';
 
 import {UserModel} from '../models/user';
 
-export class UsersController extends BaseController {
-    private populate = [];
+export class UsersController extends Controller {
+    constructor() {
+        super();
+    }
 
-    getById = async (ctx: Koa.Context) => {
+    @action()
+    async getById(ctx: Koa.Context) {
         if (!this.isObjectIdValid(ctx.params.id)) {
             ctx.throw(404);
             return;
         }
 
-        const query = this.validateQueryParams(ctx.query);
+        const {query} = ctx.state;
 
-        const user = await UserModel.findById(ctx.params.id).populate([...this.populate, ...query.populate]).lean();
+        const user = await UserModel.findById(ctx.params.id).populate([...this.autoPopulate, ...query.populate]).lean();
 
         if (user) {
             ctx.status = 200;
@@ -23,12 +26,13 @@ export class UsersController extends BaseController {
         } else {
             ctx.throw(404);
         }
-    };
+    }
 
-    getAll = async (ctx: Koa.Context) => {
-        const query = this.validateQueryParams(ctx.query);
+    @action()
+    async getAll(ctx: Koa.Context) {
+        const {query} = ctx.state;
 
-        ctx.body = await UserModel.find(query.conditions).populate([...this.populate, ...query.populate]).lean();
+        ctx.body = await UserModel.find(query.conditions).populate([...this.autoPopulate, ...query.populate]).lean();
         ctx.status = 200;
-    };
+    }
 }

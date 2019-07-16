@@ -1,16 +1,21 @@
 import Koa from 'koa';
 
-import {BaseController} from './base-controller';
+import {Controller, action} from '../lib/controller';
 
 import {MeetingModel} from '../models/meeting';
 
-export class MeetingsController extends BaseController {
-    private populate = ['facilitator'];
+export class MeetingsController extends Controller {
+    constructor() {
+        super();
 
-    getAll = async (ctx: Koa.Context) => {
-        const query = this.validateQueryParams(ctx.query);
+        this.autoPopulate = ['facilitator'];
+    }
 
-        ctx.body = await MeetingModel.find().populate([...this.populate, ...query.populate]);
+    @action()
+    async getAll(ctx: Koa.Context) {
+        const {query} = ctx.state;
+
+        ctx.body = await MeetingModel.find().populate([...this.autoPopulate, ...query.populate]);
         ctx.status = 200;
-    };
+    }
 }

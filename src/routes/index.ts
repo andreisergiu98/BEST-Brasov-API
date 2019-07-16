@@ -13,19 +13,19 @@ const entities = new EntitiesController();
 const meetings = new MeetingsController();
 
 // userModel requests
-router.get('/users', users.getAll);
-router.get('/users/:id', users.getById);
+router.get('/users', users.getAll.bind(users));
+router.get('/users/:id', users.getById.bind(users));
 
 // Entity requests
-router.get('/entities', entities.getAll);
-router.get('/entities/categories', entities.getCategories);
-router.post('/entities/comments', entities.addComment);
-router.get('/entities/:id', entities.getById);
-router.put('/entities', entities.updateOne);
-router.post('/entities', entities.createOne);
+router.get('/entities', entities.getAll.bind(entities));
+router.get('/entities/categories', entities.getCategories.bind(entities));
+router.post('/entities/comments', entities.addComment.bind(entities));
+router.get('/entities/:id', entities.getById.bind(entities));
+router.put('/entities', entities.updateOne.bind(entities));
+router.post('/entities', entities.createOne.bind(entities));
 
 // Meetings requests
-router.get('/meetings', meetings.getAll);
+router.get('/meetings', meetings.getAll.bind(meetings));
 
 // Events requests
 // router.get('/events', events.getAll);
