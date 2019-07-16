@@ -4,7 +4,7 @@ import {Controller, action} from '../lib/controller';
 
 import {EntityCategoryModel, EntityCategory} from '../models/entity-category';
 import {UserModel} from '../models/user';
-import {EntityModel} from '../models/entity';
+import {Comment, EntityModel} from '../models/entity';
 
 export class EntitiesController extends Controller {
     constructor() {
@@ -78,7 +78,7 @@ export class EntitiesController extends Controller {
 
     @action({parseQuery: false})
     async addComment(ctx: Koa.Context) {
-        const data = ctx.request.body as { _id: string, comment: any };
+        const data = ctx.request.body as { _id: string, comment: Comment };
 
         if (!this.isObjectIdValid(data._id)) {
             ctx.throw(404);

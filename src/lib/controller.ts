@@ -1,6 +1,7 @@
 import Koa from 'koa';
 import qs from 'qs';
 import {ObjectId} from 'bson';
+import {Ref} from 'typegoose';
 
 export class Controller {
     constructor() {
@@ -9,8 +10,8 @@ export class Controller {
 
     protected autoPopulate: string[];
 
-    protected isObjectIdValid = (id: string | ObjectId) => {
-        return ObjectId.isValid(id);
+    protected isObjectIdValid = (id: string | ObjectId | Ref<{}>) => {
+        return ObjectId.isValid(id as string | ObjectId);
     };
 }
 
