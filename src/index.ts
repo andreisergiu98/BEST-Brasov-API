@@ -4,13 +4,13 @@ import bodyparser from 'koa-bodyparser';
 import cors from '@koa/cors';
 
 import {catchError, logError} from './middlewares/error';
-import {db} from './core/db';
+import {db} from './lib/db';
 import {routes} from './routes';
 
 const port = 8081;
 const mongoUrl = 'mongo:27017/dashboard';
 
-import * as dev from './core/dev';
+import * as dev from './lib/dev';
 
 class App {
     app: Koa;
