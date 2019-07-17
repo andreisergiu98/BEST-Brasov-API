@@ -30,6 +30,12 @@
         "info": "This is an email address"
       }
     ],
+    "comments": [
+      {
+        "text": "This is a comment",
+        "user": "5c8e2bde08ae1f448d0176e7"
+      }
+    ],
     "numberOfCalls": 5
   },
   {
