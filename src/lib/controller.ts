@@ -10,9 +10,13 @@ export class Controller {
 
     protected autoPopulate: string[];
 
-    protected isObjectIdValid = (id: string | ObjectId | Ref<{}>) => {
+    protected isObjectIdValid(id: string | ObjectId | Ref<{}>) {
         return ObjectId.isValid(id as string | ObjectId);
-    };
+    }
+
+    protected mergeWithAutoPopulate(list: string[]) {
+        return Array.from(new Set([...this.autoPopulate, ...list]));
+    }
 }
 
 export function action(options: { parseQuery?: boolean } = {}) {
