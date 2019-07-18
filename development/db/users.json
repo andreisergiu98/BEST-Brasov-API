@@ -7,7 +7,8 @@
     "birthDate": "12-23-1992",
     "joinDate": "12-23-1992",
     "generation": "MahGeneration",
-    "status": "MDV"
+    "status": "MDV",
+    "role": "admin"
   },
   {
     "_id": "5c8e2be22cbdd3269af0a816",

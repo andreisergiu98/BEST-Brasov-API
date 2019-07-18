@@ -1,6 +1,8 @@
 import {prop, Typegoose} from 'typegoose';
 import mongoose, {Types} from 'mongoose';
 
+import {RBAC} from '../lib/rbac';
+
 import {Meeting} from './meeting';
 
 export class User extends Typegoose {
@@ -33,6 +35,9 @@ export class User extends Typegoose {
 
     @prop()
     generation?: string;
+
+    @prop({default: 'user', validate: RBAC.validateRole})
+    role!: string;
 
     @prop({ref: 'Meeting', justOne: false, overwrite: false, localField: '_id', foreignField: 'participants'})
     get meetings() {
