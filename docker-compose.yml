@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   node:
-    container_name: dev_api
+    container_name: BEST_api_node
     image: node:10.14.0-alpine
     working_dir: /home/node/app/
     ports:
@@ -17,8 +17,15 @@ services:
     command: "yarn start"
 
   mongo:
-    container_name: dev_mongo
+    container_name: BEST_api_db
     image: mongo:4.0.4-xenial
     restart: always
     ports:
       - 27017:27017
+
+  redis:
+    container_name: BEST_api_cache
+    image: redis:5.0.5-alpine
+    restart: always
+    ports:
+      - 6379:6379

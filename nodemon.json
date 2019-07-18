@@ -4,6 +4,7 @@
     "NODE_ENV": "development",
     "PORT": 8081,
     "JWT_SIGN_KEY": "dev",
-    "MONGO_DB": "mongo:27017/dashboard"
+    "MONGO_DB": "mongo:27017/dashboard",
+    "REDIS": "redis:6379"
   }
 }
