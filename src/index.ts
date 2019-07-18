@@ -7,9 +7,6 @@ import {catchError, logError} from './middlewares/error';
 import {db} from './lib/db';
 import {routes} from './routes';
 
-const port = 8081;
-const mongoUrl = 'mongo:27017/dashboard';
-
 import * as dev from './lib/dev';
 
 class App {
@@ -20,7 +17,7 @@ class App {
     }
 
     init() {
-        db.connect(`mongodb://${mongoUrl}`);
+        db.connect(`mongodb://${process.env.MONGO_DB}`);
 
         this.app.use(logger());
 
@@ -33,8 +30,8 @@ class App {
 
         this.app.use(routes);
 
-        this.app.listen(port);
-        console.log(`Server is running on port ${port}`);
+        this.app.listen(process.env.PORT);
+        console.log(`Server is running on port ${process.env.PORT}`);
 
         if (process.env.NODE_ENV === 'development') {
             dev.init();
