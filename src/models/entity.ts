@@ -1,6 +1,7 @@
-import {EntityCategory} from './entity-category';
 import {arrayProp, prop, Ref, Typegoose} from 'typegoose';
 import mongoose, {Types} from 'mongoose';
+
+import {EntityCategory} from './entity-category';
 import {User} from './user';
 
 export class PhoneNumber {
@@ -61,7 +62,7 @@ export class Entity extends Typegoose {
     @arrayProp({items: Comment, default: []})
     comments!: [Ref<Comment>];
 
-    @arrayProp({itemsRef: EntityCategory, default: []})
+    @arrayProp({itemsRef: {name: 'EntityCategory'}, default: []})
     categories!: [Ref<EntityCategory>];
 }
 

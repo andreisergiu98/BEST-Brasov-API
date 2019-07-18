@@ -1,7 +1,7 @@
-import {prop, staticMethod, Typegoose} from 'typegoose';
+import {prop, Typegoose} from 'typegoose';
+import mongoose, {Types} from 'mongoose';
 
 import {Meeting} from './meeting';
-import mongoose, {Types} from 'mongoose';
 
 export class User extends Typegoose {
     _id!: Types.ObjectId;
@@ -34,14 +34,9 @@ export class User extends Typegoose {
     @prop()
     generation?: string;
 
-    @prop({ref: Meeting, justOne: false, overwrite: false, localField: '_id', foreignField: 'participants'})
+    @prop({ref: 'Meeting', justOne: false, overwrite: false, localField: '_id', foreignField: 'participants'})
     get meetings() {
         return [] as Meeting[] | undefined;
-    }
-
-    @staticMethod
-    static getRelations() {
-        return ['meetings'];
     }
 }
 

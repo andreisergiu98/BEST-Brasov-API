@@ -1,7 +1,7 @@
 import {arrayProp, prop, Ref, Typegoose} from 'typegoose';
+import mongoose, {Types} from 'mongoose';
 
 import {User} from './user';
-import mongoose, {Types} from 'mongoose';
 
 export class Meeting extends Typegoose {
     _id!: Types.ObjectId;
@@ -10,7 +10,7 @@ export class Meeting extends Typegoose {
 
     updatedAt!: Date;
 
-    @prop({required: true, ref: 'User'})
+    @prop({required: true, ref: {name: 'User'}})
     facilitator!: Ref<User>;
 
     @prop({required: true})
@@ -22,10 +22,10 @@ export class Meeting extends Typegoose {
     @prop({default: []})
     tags!: [string];
 
-    @arrayProp({itemsRef: 'User'})
+    @arrayProp({itemsRef: {name: 'User'}})
     participants!: [Ref<User>];
 
-    @arrayProp({itemsRef: 'User'})
+    @arrayProp({itemsRef: {name: 'User'}})
     pendingApproval!: [Ref<User>];
 }
 
