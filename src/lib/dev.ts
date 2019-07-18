@@ -8,10 +8,8 @@ import {MeetingModel, Meeting} from '../models/meeting';
 // import {CallingSession, CallingSessionType} from '../models/calling-session';
 // import {Event, EventType} from '../models/event';
 
-export const init = (): void => {
-    loadDbSeed().then().catch(e => {
-        console.log(e);
-    });
+export const init = async () => {
+    await loadDbSeed();
 };
 
 const loadDbSeed = async () => {
