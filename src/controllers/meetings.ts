@@ -14,8 +14,10 @@ export class MeetingsController extends Controller {
     @action()
     async getAll(ctx: Koa.Context) {
         const {query} = ctx.state;
+        const populate = this.mergeWithAutoPopulate(query.populate);
+        const conditions = query.conditions;
 
-        ctx.body = await MeetingModel.find().populate([...this.autoPopulate, ...query.populate]);
+        ctx.body = await MeetingModel.find(conditions).populate(populate).lean();
         ctx.status = 200;
     }
 }

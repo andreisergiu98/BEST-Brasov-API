@@ -16,8 +16,10 @@ export class EntitiesController extends Controller {
     @action()
     async getAll(ctx: Koa.Context) {
         const {query} = ctx.state;
+        const populate = this.mergeWithAutoPopulate(query.populate);
+        const conditions = query.conditions;
 
-        ctx.body = await EntityModel.find().populate([...this.autoPopulate, ...query.populate]).lean();
+        ctx.body = await EntityModel.find(conditions).populate(populate).lean();
         ctx.status = 200;
     }
 
@@ -28,8 +30,9 @@ export class EntitiesController extends Controller {
         }
 
         const {query} = ctx.state;
+        const populate = this.mergeWithAutoPopulate(query.populate);
 
-        const entity = await EntityModel.findById(ctx.params.id).populate([...this.autoPopulate, ...query.populate]).lean();
+        const entity = await EntityModel.findById(ctx.params.id).populate(populate).lean();
 
         if (entity) {
             ctx.status = 200;

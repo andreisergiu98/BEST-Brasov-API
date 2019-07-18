@@ -17,8 +17,9 @@ export class UsersController extends Controller {
         }
 
         const {query} = ctx.state;
+        const populate = this.mergeWithAutoPopulate(query.populate);
 
-        const user = await UserModel.findById(ctx.params.id).populate([...this.autoPopulate, ...query.populate]).lean();
+        const user = await UserModel.findById(ctx.params.id).populate(populate).lean();
 
         if (user) {
             ctx.status = 200;
@@ -31,8 +32,10 @@ export class UsersController extends Controller {
     @action()
     async getAll(ctx: Koa.Context) {
         const {query} = ctx.state;
+        const populate = this.mergeWithAutoPopulate(query.populate);
+        const conditions = query.conditions;
 
-        ctx.body = await UserModel.find(query.conditions).populate([...this.autoPopulate, ...query.populate]).lean();
+        ctx.body = await UserModel.find(conditions).populate(populate).lean();
         ctx.status = 200;
     }
 }
