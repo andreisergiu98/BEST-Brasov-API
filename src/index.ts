@@ -4,10 +4,12 @@ import bodyparser from 'koa-bodyparser';
 import cors from '@koa/cors';
 
 import {catchError, logError} from './middlewares/error';
-import {db} from './lib/db';
-import {routes} from './routes';
 
+import {db} from './lib/db';
+import {sessionStorage} from './lib/session-storage';
 import * as dev from './lib/dev';
+
+import {routes} from './routes';
 
 class App {
     app: Koa;
@@ -16,8 +18,10 @@ class App {
         this.app = new Koa();
     }
 
-    init() {
-        db.connect(`mongodb://${process.env.MONGO_DB}`);
+    async init() {
+        await db.connect(`mongodb://${process.env.MONGO_DB}`);
+
+        await sessionStorage.connect(`redis://${process.env.REDIS}`);
 
         this.app.use(logger());
 
@@ -30,14 +34,15 @@ class App {
 
         this.app.use(routes);
 
+        if (process.env.NODE_ENV === 'development') {
+            await dev.init();
+        }
+
         this.app.listen(process.env.PORT);
         console.log(`Server is running on port ${process.env.PORT}`);
-
-        if (process.env.NODE_ENV === 'development') {
-            dev.init();
-        }
     }
 }
 
 const app = new App();
-app.init();
+
+app.init().then().catch(e => console.log(e.message));
