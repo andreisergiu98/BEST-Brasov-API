@@ -30,7 +30,7 @@ class Db {
             });
 
             db.once('open', () => {
-                console.log('Mongo connection opened!');
+                console.log('Mongo connection is ready!\n');
                 resolve();
             });
 

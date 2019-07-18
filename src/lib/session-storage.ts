@@ -17,7 +17,7 @@ class SessionStorage {
             });
 
             this.client.on('ready', () => {
-                console.log(`Redis-${this.db} connection is ready!`);
+                console.log(`Redis-${this.db} connection is ready!\n`);
                 resolve();
             });
 
