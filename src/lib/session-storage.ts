@@ -1,50 +1,49 @@
-import redis, {RedisClient} from 'redis';
+import uuid from 'uuid/v4';
+import {RedisClient} from './redis';
 
-class SessionStorage {
-    constructor(dbNumber: number) {
-        this.db = dbNumber;
+class SessionStorage extends RedisClient {
+    createSession(userId: string, data: {}, exp = 7 * 24 * 60 * 60) {
+        const key = userId + '-' + uuid();
+        return this.client.set(key, JSON.stringify(data), 'EX', exp);
     }
 
-    async connect(url: string) {
+    getSession(session: string) {
         return new Promise((resolve, reject) => {
-            this.client = redis.createClient(url + '/' + this.db);
-
-            console.log(`Connecting to Redis-${this.db}...`);
-
-            this.client.on('error', e => {
-                console.log('Redis error: ' + e);
-                reject();
-            });
-
-            this.client.on('ready', () => {
-                console.log(`Redis-${this.db} connection is ready!\n`);
-                resolve();
-            });
-
+            this.client.get(session).then(res => {
+                if (res) {
+                    resolve(JSON.parse(res));
+                } else {
+                    resolve({});
+                }
+            }).catch(e => reject(e));
         });
     }
 
-    private readonly db!: number;
-    private client!: RedisClient;
-
-    createSession() {
-
+    deleteSession(session: string) {
+        return this.client.del(session);
     }
 
-    getSession() {
+    deleteAllSessions(userId: string) {
+        return new Promise((resolve, reject) => {
+            const stream = this.client.scanStream({
+                match: userId + '-*',
+                count: 100,
+            });
 
-    }
+            const keys: string[] = [];
 
-    deleteSession() {
+            stream.on('data', (resultKeys) => {
+                for (let i = 0; i < resultKeys.length; i++) {
+                    keys.push(resultKeys[i]);
+                }
+            });
 
-    }
-
-    deleteAllSessions() {
-
-    }
-
-    reset() {
-
+            stream.on('end', () => {
+                // tslint:disable-next-line:ban-ts-ignore
+                // @ts-ignore
+                this.client.unlink(keys).then(() => resolve()).catch(e => reject(e));
+            });
+        });
     }
 }
 
