@@ -1,7 +1,6 @@
 import Koa from 'koa';
 import logger from 'koa-logger';
 import bodyparser from 'koa-bodyparser';
-import cors from '@koa/cors';
 
 import {catchError, logError} from './middlewares/error';
 
@@ -29,8 +28,6 @@ class App {
         this.app.on('error', logError);
 
         this.app.use(bodyparser());
-
-        this.app.use(cors());
 
         this.app.use(routes);
 
