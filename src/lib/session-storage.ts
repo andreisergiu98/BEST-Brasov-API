@@ -1,5 +1,6 @@
 import uuid from 'uuid/v4';
 import {RedisClient} from './redis';
+import {config} from './config';
 
 interface SessionData {
     id: string;
@@ -107,4 +108,4 @@ class SessionStorage extends RedisClient {
     }
 }
 
-export const sessionStorage = new SessionStorage(0);
+export const sessionStorage = new SessionStorage(config.redis.sessionStorageDb);

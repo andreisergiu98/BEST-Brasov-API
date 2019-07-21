@@ -1,5 +1,6 @@
 import Koa from 'koa';
 
+import {config} from '../lib/config';
 import {Controller, action} from '../lib/controller';
 import {sessionStorage} from '../lib/session-storage';
 
@@ -30,9 +31,7 @@ export class UsersController extends Controller {
         const userData = {id: user._id, name: user.name, role: user.role};
         const auth = await sessionStorage.createSession(user._id, userData);
 
-        ctx.cookies.set('auth', auth, {
-            secure: process.env.NODE_ENV !== 'development',
-        });
+        ctx.cookies.set('auth', auth, config.cookie);
         ctx.body = userData;
         ctx.status = 200;
     }

@@ -1,13 +1,14 @@
 import Koa from 'koa';
 import logger from 'koa-logger';
-import cors from  '@koa/cors';
+import cors from '@koa/cors';
 import bodyparser from 'koa-bodyparser';
 
 import {catchError, logError} from './middlewares/error';
 
+import {config} from './lib/config';
 import {db} from './lib/db';
 import {sessionStorage} from './lib/session-storage';
-import * as dev from './lib/dev';
+import {dev} from './lib/dev';
 
 import {routes} from './routes';
 
@@ -19,9 +20,9 @@ class App {
     }
 
     async init() {
-        await db.connect(`mongodb://${process.env.MONGO_DB}`);
+        await db.connect(config.mongo.url);
 
-        await sessionStorage.connect(`redis://${process.env.REDIS}`);
+        await sessionStorage.connect(config.redis.url);
 
         this.app.use(logger());
 
@@ -30,19 +31,16 @@ class App {
 
         this.app.use(bodyparser());
 
-        this.app.use(cors({
-            credentials: true,
-            origin: ctx => ctx.request.header.origin,
-        }));
+        this.app.use(cors(config.cors));
 
         this.app.use(routes);
 
-        if (process.env.NODE_ENV === 'development') {
+        if (!config.isProduction) {
             await dev.init();
         }
 
-        this.app.listen(process.env.PORT);
-        console.log(`Server is running on port ${process.env.PORT}`);
+        this.app.listen(config.node.port);
+        console.log(`Server is running on port ${config.node.port}`);
     }
 }
 

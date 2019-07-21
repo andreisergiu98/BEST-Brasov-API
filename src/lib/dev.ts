@@ -8,7 +8,7 @@ import {MeetingModel, Meeting} from '../models/meeting';
 // import {CallingSession, CallingSessionType} from '../models/calling-session';
 // import {Event, EventType} from '../models/event';
 
-export const init = async () => {
+const init = async () => {
     await loadDbSeed();
 };
 
@@ -37,4 +37,9 @@ const loadDbSeed = async () => {
 
     // await CallingSession.deleteMany({});
     // await CallingSession.insertMany(callingSessions);
+    console.log('Dev: db seed loaded!\n');
+};
+
+export const dev = {
+    init,
 };
