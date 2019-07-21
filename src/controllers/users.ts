@@ -37,6 +37,13 @@ export class UsersController extends Controller {
         ctx.status = 200;
     }
 
+    @action({parseQuery: false})
+    async authenticate(ctx: Koa.Context) {
+        ctx.body = ctx.state.user;
+        ctx.status = 200;
+    }
+
+
     @action()
     async getById(ctx: Koa.Context) {
         if (!this.isObjectIdValid(ctx.params.id)) {
