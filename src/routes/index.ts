@@ -17,18 +17,21 @@ const meetings = new MeetingsController();
 // middlewares
 router.use(authentication);
 
-// userModel requests
+// authentication
+router.get('/authentication', users.authenticate.bind(users));
+router.post('/authentication', users.login.bind(users));
+
+// User requests
 router.get('/users', users.getAll.bind(users));
-router.put('/users/login', users.login.bind(users));
 router.get('/users/:id', users.getById.bind(users));
 
 // Entity requests
 router.get('/entities', entities.getAll.bind(entities));
 router.get('/entities/categories', entities.getCategories.bind(entities));
-router.post('/entities/comments', entities.addComment.bind(entities));
 router.get('/entities/:id', entities.getById.bind(entities));
 router.put('/entities', entities.updateOne.bind(entities));
 router.post('/entities', entities.createOne.bind(entities));
+router.post('/entities/comments', entities.addComment.bind(entities));
 
 // Meetings requests
 router.get('/meetings', meetings.getAll.bind(meetings));

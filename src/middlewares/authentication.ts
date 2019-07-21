@@ -3,7 +3,7 @@ import Koa from 'koa';
 import {sessionStorage} from '../lib/session-storage';
 
 export const authentication = async (ctx: Koa.Context, next: Function) => {
-    if (ctx.url === '/users/login') {
+    if (ctx.method === 'POST' && ctx.url === '/authentication') {
         return next();
     }
 
