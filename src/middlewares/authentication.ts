@@ -1,25 +1,39 @@
 import Koa from 'koa';
-import jwt from 'jsonwebtoken';
+
+import {sessionStorage} from '../lib/session-storage';
 
 export const authentication = async (ctx: Koa.Context, next: Function) => {
-    const token = ctx.get('authorization');
-    const signKey = process.env.JWT_SIGN_KEY;
+    if (ctx.url === '/users/login') {
+        return next();
+    }
 
-    if (!signKey) {
-        ctx.throw('No JWT sign key!');
+    const authKey = ctx.cookies.get('auth');
+
+    if (!authKey) {
+        ctx.throw(401);
         return;
     }
 
-    if (!token) {
+    const data = await sessionStorage.getSession(authKey);
+
+    if (!data) {
+        ctx.cookies.set('auth', '', {
+            expires: new Date(),
+        });
+
         ctx.throw(401);
+        return;
     }
 
-    await jwt.verify(token, signKey, (err, decoded) => {
-        if (err) {
-            ctx.throw(401);
-        } else {
-            ctx.state.user = decoded;
-            return next();
+    if (data.expires) {
+        let remainingDays = new Date(data.expires).getTime() - Date.now();
+        remainingDays = remainingDays / 1000 / 60 / 60 / 24;
+
+        if (remainingDays < 1) {
+            await sessionStorage.extendSession(authKey, data);
         }
-    });
+    }
+
+    ctx.state.user = data;
+    await next();
 };

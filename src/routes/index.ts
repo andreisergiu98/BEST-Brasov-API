@@ -6,11 +6,16 @@ import {UsersController} from '../controllers/users';
 import {EntitiesController} from '../controllers/entities';
 import {MeetingsController} from '../controllers/meetings';
 
+import {authentication} from '../middlewares/authentication';
+
 const router: Router = new Router();
 
 const users = new UsersController();
 const entities = new EntitiesController();
 const meetings = new MeetingsController();
+
+// middlewares
+router.use(authentication);
 
 // userModel requests
 router.get('/users', users.getAll.bind(users));
