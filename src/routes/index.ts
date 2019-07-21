@@ -19,6 +19,7 @@ router.use(authentication);
 
 // userModel requests
 router.get('/users', users.getAll.bind(users));
+router.put('/users/login', users.login.bind(users));
 router.get('/users/:id', users.getById.bind(users));
 
 // Entity requests

@@ -1,12 +1,40 @@
 import Koa from 'koa';
 
 import {Controller, action} from '../lib/controller';
+import {sessionStorage} from '../lib/session-storage';
 
 import {UserModel} from '../models/user';
 
 export class UsersController extends Controller {
     constructor() {
         super();
+    }
+
+    @action({parseQuery: false})
+    async login(ctx: Koa.Context) {
+        const data = ctx.request.body;
+
+        if (!data.email) {
+            ctx.throw(400);
+            return;
+        }
+
+        const users = await UserModel.find({email: data.email});
+
+        if (users.length === 0) {
+            ctx.throw(403);
+            return;
+        }
+
+        const user = users[0];
+        const userData = {id: user._id, name: user.name, role: user.role};
+        const auth = await sessionStorage.createSession(user._id, userData);
+
+        ctx.cookies.set('auth', auth, {
+            secure: process.env.NODE_ENV !== 'development',
+        });
+        ctx.body = userData;
+        ctx.status = 200;
     }
 
     @action()
