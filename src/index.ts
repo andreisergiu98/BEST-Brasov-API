@@ -30,7 +30,10 @@ class App {
 
         this.app.use(bodyparser());
 
-        this.app.use(cors());
+        this.app.use(cors({
+            credentials: true,
+            origin: ctx => ctx.request.header.origin,
+        }));
 
         this.app.use(routes);
 
