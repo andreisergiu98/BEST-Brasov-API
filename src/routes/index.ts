@@ -1,12 +1,13 @@
 import Router from 'koa-router';
 
+import {RBAC} from '../lib/rbac';
+import {authentication} from '../middlewares/authentication';
+
 // import * as events from './events';
 // import * as callingSessions from './calling-sessions';
 import {UsersController} from '../controllers/users';
 import {EntitiesController} from '../controllers/entities';
 import {MeetingsController} from '../controllers/meetings';
-
-import {authentication} from '../middlewares/authentication';
 
 const router: Router = new Router();
 
@@ -29,9 +30,9 @@ router.get('/users/:id', users.getById.bind(users));
 router.get('/entities', entities.getAll.bind(entities));
 router.get('/entities/categories', entities.getCategories.bind(entities));
 router.get('/entities/:id', entities.getById.bind(entities));
-router.put('/entities', entities.updateOne.bind(entities));
-router.post('/entities', entities.createOne.bind(entities));
-router.post('/entities/comments', entities.addComment.bind(entities));
+router.put('/entities', RBAC.restrictAccess(RBAC.roles.user), entities.updateOne.bind(entities));
+router.post('/entities', RBAC.restrictAccess(RBAC.roles.user), entities.createOne.bind(entities));
+router.post('/entities/comments', RBAC.restrictAccess(RBAC.roles.user), entities.addComment.bind(entities));
 
 // Meetings requests
 router.get('/meetings', meetings.getAll.bind(meetings));
