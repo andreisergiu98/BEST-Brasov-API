@@ -7,7 +7,6 @@ export const catchError = async (ctx: Koa.Context, next: Function) => {
         ctx.status = e.status || 500;
 
         if (ctx.status === 500) {
-            ctx.body = 'There was an error on the server, please report this to the coordinator!';
             ctx.app.emit('error', e, ctx);
             return;
         }
