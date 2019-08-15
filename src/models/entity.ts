@@ -1,5 +1,5 @@
-import {arrayProp, prop, Ref, Typegoose} from 'typegoose';
-import mongoose, {Types} from 'mongoose';
+import {arrayProp, pre, prop, Ref, Typegoose} from 'typegoose';
+import mongoose, {Types, Document} from 'mongoose';
 
 import {EntityCategory} from './entity-category';
 import {User} from './user';
@@ -31,6 +31,12 @@ export class Comment {
     user!: Ref<User>;
 }
 
+function autoPopulate(this: Document) {
+    this.populate('categories');
+}
+
+@pre<Entity>('find',  autoPopulate)
+@pre<Entity>('findOne', autoPopulate)
 export class Entity extends Typegoose {
     _id!: Types.ObjectId;
 
