@@ -1,23 +1,14 @@
 import Koa from 'koa';
 
-import {Controller, action} from '../lib/controller';
+import {Controller, mountQueryToState} from '../lib/controller';
 
 import {MeetingModel} from '../models/meeting';
 
 export class MeetingsController extends Controller {
-    constructor() {
-        super();
-
-        this.autoPopulate = ['facilitator'];
-    }
-
-    @action()
+    @mountQueryToState()
     async getAll(ctx: Koa.Context) {
         const {query} = ctx.state;
-        const populate = this.mergeWithAutoPopulate(query.populate);
-        const conditions = query.conditions;
-
-        ctx.body = await MeetingModel.find(conditions).populate(populate).lean();
+        ctx.body = await MeetingModel.find(query.conditions).populate(query.populate).select(query.fields).lean();
         ctx.status = 200;
     }
 }

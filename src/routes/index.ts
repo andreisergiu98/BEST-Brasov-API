@@ -19,23 +19,23 @@ const meetings = new MeetingsController();
 router.use(authentication);
 
 // authentication
-router.get('/authentication', users.authenticate.bind(users));
-router.post('/authentication', users.login.bind(users));
+router.get('/authentication', users.authenticate);
+router.post('/authentication', users.login);
 
 // User requests
-router.get('/users', users.getAll.bind(users));
-router.get('/users/:id', users.getById.bind(users));
+router.get('/users', users.getAll);
+router.get('/users/:id', users.getById);
 
 // Entity requests
-router.get('/entities', entities.getAll.bind(entities));
-router.get('/entities/categories', entities.getCategories.bind(entities));
-router.get('/entities/:id', entities.getById.bind(entities));
-router.put('/entities', RBAC.restrictAccess(RBAC.roles.user), entities.updateOne.bind(entities));
-router.post('/entities', RBAC.restrictAccess(RBAC.roles.user), entities.createOne.bind(entities));
-router.post('/entities/comments', RBAC.restrictAccess(RBAC.roles.user), entities.addComment.bind(entities));
+router.get('/entities', entities.getAll);
+router.get('/entities/categories', entities.getCategories);
+router.get('/entities/:id', entities.getById);
+router.put('/entities', RBAC.restrictAccess(RBAC.roles.user), entities.updateOne);
+router.post('/entities', RBAC.restrictAccess(RBAC.roles.user), entities.createOne);
+router.post('/entities/comments', RBAC.restrictAccess(RBAC.roles.user), entities.addComment);
 
 // Meetings requests
-router.get('/meetings', meetings.getAll.bind(meetings));
+router.get('/meetings', meetings.getAll);
 
 // Events requests
 // router.get('/events', events.getAll);

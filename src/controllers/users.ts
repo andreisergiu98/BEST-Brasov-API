@@ -1,17 +1,42 @@
 import Koa from 'koa';
 
 import {config} from '../lib/config';
-import {Controller, action} from '../lib/controller';
+import {Controller, mountQueryToState} from '../lib/controller';
 import {sessionStorage} from '../lib/session-storage';
 
 import {UserModel} from '../models/user';
 
 export class UsersController extends Controller {
-    constructor() {
-        super();
+    @mountQueryToState()
+    async getById(ctx: Koa.Context) {
+        if (!this.isObjectIdValid(ctx.params.id)) {
+            ctx.throw(404);
+            return;
+        }
+
+        const {query} = ctx.state;
+        const user = await UserModel.findById(ctx.params.id).populate(query.populate).select(query.fields).lean();
+
+        if (user) {
+            ctx.status = 200;
+            ctx.body = user;
+        } else {
+            ctx.throw(404);
+        }
     }
 
-    @action({parseQuery: false})
+    @mountQueryToState()
+    async getAll(ctx: Koa.Context) {
+        const {query} = ctx.state;
+        ctx.body = await UserModel.find(query.conditions).populate(query.populate).select(query.fields).lean();
+        ctx.status = 200;
+    }
+
+    async authenticate(ctx: Koa.Context) {
+        ctx.body = ctx.state.user;
+        ctx.status = 200;
+    }
+
     async login(ctx: Koa.Context) {
         const data = ctx.request.body;
 
@@ -33,43 +58,6 @@ export class UsersController extends Controller {
 
         ctx.cookies.set('auth', auth, config.cookie);
         ctx.body = userData;
-        ctx.status = 200;
-    }
-
-    @action({parseQuery: false})
-    async authenticate(ctx: Koa.Context) {
-        ctx.body = ctx.state.user;
-        ctx.status = 200;
-    }
-
-
-    @action()
-    async getById(ctx: Koa.Context) {
-        if (!this.isObjectIdValid(ctx.params.id)) {
-            ctx.throw(404);
-            return;
-        }
-
-        const {query} = ctx.state;
-        const populate = this.mergeWithAutoPopulate(query.populate);
-
-        const user = await UserModel.findById(ctx.params.id).populate(populate).lean();
-
-        if (user) {
-            ctx.status = 200;
-            ctx.body = user;
-        } else {
-            ctx.throw(404);
-        }
-    }
-
-    @action()
-    async getAll(ctx: Koa.Context) {
-        const {query} = ctx.state;
-        const populate = this.mergeWithAutoPopulate(query.populate);
-        const conditions = query.conditions;
-
-        ctx.body = await UserModel.find(conditions).populate(populate).lean();
         ctx.status = 200;
     }
 }
