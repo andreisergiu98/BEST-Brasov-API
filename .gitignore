@@ -1,6 +1,9 @@
 ### Idea ###
 .idea
 
+### Code ###
+.vscode
+
 ### Node ###
 
 # Logs
@@ -9,7 +12,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # Compiled binary
-dist/
+build/
 
 # Dependency directories
 node_modules/
