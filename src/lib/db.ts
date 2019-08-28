@@ -1,19 +1,12 @@
 import mongoose from 'mongoose';
+import {config} from '../config';
 
 class Db {
     connection = mongoose.connection;
 
     async connect(url: string) {
         return new Promise((resolve, reject) => {
-            mongoose.set('useCreateIndex', true);
-
             const db = this.connection;
-
-            const config = {
-                useNewUrlParser: true,
-                autoReconnect: true,
-                useFindAndModify: false,
-            };
 
             db.on('connecting', () => {
                 console.log('Connecting to Mongo...');
@@ -43,11 +36,11 @@ class Db {
 
                 // Wait 2 seconds and try to reconnect to the database
                 setTimeout(() => {
-                    mongoose.connect(url, config);
+                    mongoose.connect(url, config.mongo.options);
                 }, 2000);
             });
 
-            mongoose.connect(url, config);
+            mongoose.connect(url, config.mongo.options);
         });
     }
 }

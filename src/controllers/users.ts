@@ -1,6 +1,6 @@
 import Koa from 'koa';
 
-import {config} from '../lib/config';
+import {config} from '../config';
 import {Controller, mountQueryToState} from '../lib/controller';
 import {sessionStorage} from '../lib/session-storage';
 
@@ -45,18 +45,17 @@ export class UsersController extends Controller {
             return;
         }
 
-        const users = await UserModel.find({email: data.email});
+        const user = await UserModel.findOne({email: data.email});
 
-        if (users.length === 0) {
+        if (!user) {
             ctx.throw(403);
             return;
         }
 
-        const user = users[0];
         const userData = {id: user._id, name: user.name, role: user.role};
-        const auth = await sessionStorage.createSession(user._id, userData);
+        const authKey = await sessionStorage.createSession(user._id, userData);
 
-        ctx.cookies.set('auth', auth, config.cookie);
+        ctx.cookies.set('auth', authKey, config.cookie);
         ctx.body = userData;
         ctx.status = 200;
     }

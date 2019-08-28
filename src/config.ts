@@ -1,19 +1,23 @@
-import * as cors from '@koa/cors';
-import * as Cookies from 'cookies';
+import cors from '@koa/cors';
+import cookies from 'cookies';
+import mongoose from 'mongoose';
 
 interface Config {
     isProduction: boolean;
     node: {
         port: string | number;
     };
-    cookie: Cookies.SetOption;
+    cookie: cookies.SetOption;
     cors: cors.Options;
     mongo: {
         url: string;
+        options: mongoose.ConnectionOptions,
     };
     redis: {
         url: string;
-        sessionStorageDb: number;
+        databases: {
+            sessionStorage: number
+        };
     };
 }
 
@@ -31,10 +35,18 @@ export const config: Config = {
     },
     mongo: {
         url: `mongodb://${process.env.MONGO_DB}`,
+        options: {
+            useNewUrlParser: true,
+            autoReconnect: true,
+            useFindAndModify: false,
+            useCreateIndex: true,
+        },
     },
     redis: {
         url: `redis://${process.env.REDIS}`,
-        sessionStorageDb: 0,
+        databases: {
+          sessionStorage: 0,
+        },
     },
     node: {
         port: process.env.PORT || 8081,

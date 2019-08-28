@@ -5,10 +5,10 @@ import bodyparser from 'koa-bodyparser';
 
 import {catchError, logError} from './middlewares/error';
 
-import {config} from './lib/config';
+import {config} from './config';
 import {db} from './lib/db';
 import {sessionStorage} from './lib/session-storage';
-import {dev} from './lib/dev';
+import {dev} from './dev';
 
 import {routes} from './routes';
 

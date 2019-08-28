@@ -1,6 +1,6 @@
 import uuid from 'uuid/v4';
 import {RedisClient} from './redis';
-import {config} from './config';
+import {config} from '../config';
 
 interface SessionData {
     id: string;
@@ -10,7 +10,7 @@ interface SessionData {
 }
 
 class SessionStorage extends RedisClient {
-    defaultExp = 7 * 24 * 60 * 60;
+    private defaultExp = 7 * 24 * 60 * 60;
     private separator = '-';
 
     createSession(userId: string, data: SessionData, exp = this.defaultExp): Promise<string> {
@@ -108,4 +108,4 @@ class SessionStorage extends RedisClient {
     }
 }
 
-export const sessionStorage = new SessionStorage(config.redis.sessionStorageDb);
+export const sessionStorage = new SessionStorage(config.redis.databases.sessionStorage);

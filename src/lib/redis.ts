@@ -1,6 +1,9 @@
 import Redis from 'ioredis';
 
 export class RedisClient {
+    private readonly db!: number;
+    client!: Redis.Redis;
+
     constructor(db: number) {
         this.db = db;
     }
@@ -22,7 +25,4 @@ export class RedisClient {
 
         });
     }
-
-    private readonly db!: number;
-    client!: Redis.Redis;
 }
