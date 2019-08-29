@@ -9,7 +9,7 @@ import {UsersController} from '../controllers/users';
 import {EntitiesController} from '../controllers/entities';
 import {MeetingsController} from '../controllers/meetings';
 
-const router: Router = new Router();
+const router = new Router();
 
 const users = new UsersController();
 const entities = new EntitiesController();
