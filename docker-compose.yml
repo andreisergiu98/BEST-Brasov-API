@@ -16,12 +16,18 @@ services:
       - "./nodemon.json:/home/node/app/nodemon.json"
     command: "yarn start"
 
-  mongo:
-    container_name: BEST_api_db
-    image: mongo:4.0.4-xenial
+  db:
+    container_name: BEST_api_postgres
+    image: postgres:11-alpine
     restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: bestbrasov
+    volumes:
+      - "./development/db:/docker-entrypoint-initdb.d/"
     ports:
-      - 27017:27017
+      - 5432:5432
 
   redis:
     container_name: BEST_api_cache

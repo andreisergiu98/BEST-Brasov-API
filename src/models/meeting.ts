@@ -1,36 +1,28 @@
-import {arrayProp, prop, Ref, Typegoose} from 'typegoose';
-import mongoose, {Types} from 'mongoose';
-
+import {Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {User} from './user';
+import {MeetingParticipant} from './meeting-participant';
 
-export class Meeting extends Typegoose {
-    _id!: Types.ObjectId;
+@Entity()
+export class Meeting {
+    @PrimaryGeneratedColumn()
+    id!: number;
 
-    createdAt!: Date;
-
-    updatedAt!: Date;
-
-    @prop({required: true, ref: {name: 'User'}})
-    facilitator!: Ref<User>;
-
-    @prop({required: true})
+    @Column({type: 'text'})
     name!: string;
 
-    @prop()
-    date?: string;
+    @Column({type: 'date'})
+    date?: Date;
 
-    @prop({default: []})
-    tags!: [string];
+    @Column({type: 'text', array: true})
+    tags!: string[];
 
-    @arrayProp({itemsRef: {name: 'User'}})
-    participants!: [Ref<User>];
+    @Column({type: 'integer'})
+    facilitatorId!: number;
 
-    @arrayProp({itemsRef: {name: 'User'}})
-    pendingApproval!: [Ref<User>];
+    @OneToOne(() => User)
+    @JoinColumn({name: 'facilitatorId'})
+    facilitator?: User;
+
+    @OneToMany(() => MeetingParticipant, participant => participant.meeting)
+    participants?: MeetingParticipant[];
 }
-
-// tslint:disable-next-line:variable-name
-export const MeetingModel = new Meeting().getModelForClass(Meeting, {
-    schemaOptions: {timestamps: true},
-    existingMongoose: mongoose,
-});

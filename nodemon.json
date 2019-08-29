@@ -4,7 +4,7 @@
     "NODE_ENV": "development",
     "PORT": 8081,
     "JWT_SIGN_KEY": "dev",
-    "MONGO_DB": "mongo:27017/dashboard",
+    "POSTGRES_DB": "postgres://root:root@db/bestbrasov",
     "REDIS": "redis:6379"
   }
 }

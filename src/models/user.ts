@@ -1,52 +1,49 @@
-import {prop, Typegoose} from 'typegoose';
-import mongoose, {Types} from 'mongoose';
+import {Entity, Column, PrimaryGeneratedColumn} from 'typeorm';
 
-import {RBAC} from '../lib/rbac';
+@Entity()
+export class User {
+    @PrimaryGeneratedColumn()
+    id!: number;
 
-import {Meeting} from './meeting';
-
-export class User extends Typegoose {
-    _id!: Types.ObjectId;
-
-    createdAt!: Date;
-
-    updatedAt!: Date;
-
-    @prop({required: true, unique: true})
+    @Column({type: 'text', unique: true})
     email!: string;
 
-    @prop({required: true})
+    @Column({type: 'text'})
     name!: string;
 
-    @prop()
+    @Column({type: 'text', nullable: true})
     status?: string;
 
-    @prop()
+    @Column({type: 'text', nullable: true})
     phone?: string;
 
-    @prop()
+    @Column({type: 'text', nullable: true})
     photo?: string;
 
-    @prop()
+    @Column({type: 'text', nullable: true})
     birthDate?: string;
 
-    @prop()
+    @Column({type: 'text', nullable: true})
     joinDate?: string;
 
-    @prop()
+    @Column({type: 'text', nullable: true})
     generation?: string;
 
-    @prop({default: 'user', validate: RBAC.validateRole})
+    @Column({type: 'text', default: 'user'})
     role!: string;
 
-    @prop({ref: 'Meeting', justOne: false, overwrite: false, localField: '_id', foreignField: 'participants'})
-    get meetings() {
-        return [] as Meeting[] | undefined;
+    constructor(user?: User) {
+        if (user) {
+            this.id = user.id;
+            this.email = user.email;
+            this.name = user.name;
+            this.status = user.status;
+            this.phone = user.phone;
+            this.photo = user.photo;
+            this.birthDate = user.birthDate;
+            this.joinDate = user.joinDate;
+            this.generation = user.generation;
+            this.role = user.role;
+        }
     }
 }
-
-// tslint:disable-next-line:variable-name
-export const UserModel = new User().getModelForClass(User, {
-    schemaOptions: {timestamps: true},
-    existingMongoose: mongoose,
-});

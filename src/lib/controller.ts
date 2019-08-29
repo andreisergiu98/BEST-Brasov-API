@@ -1,18 +1,11 @@
 import Koa from 'koa';
 import qs from 'qs';
-import {ObjectId} from 'bson';
-import {Ref} from 'typegoose';
 import autoBind from 'auto-bind';
 import {object} from '../utils/object';
 
 export class Controller {
     constructor() {
-        // tslint:disable-next-line:no-any
-        autoBind(this as any);
-    }
-
-    protected isObjectIdValid(id: string | ObjectId | Ref<{}>) {
-        return ObjectId.isValid(id as string | ObjectId);
+        autoBind(this as {});
     }
 }
 
@@ -34,9 +27,9 @@ export function mountQueryToState() {
 
 function parseQuery(query: string) {
     const validQuery = {
-        populate: [] as string[],
+        populate: undefined as string[] | undefined,
+        fields: undefined as string[] | undefined,
         conditions: {},
-        fields: '',
     };
 
     const parsedQuery = qs.parse(query);
@@ -46,6 +39,7 @@ function parseQuery(query: string) {
 
     if (parsedQuery.populate) {
         if (Array.isArray(parsedQuery.populate)) {
+            validQuery.populate = [];
             for (const item of parsedQuery.populate) {
                 if (object.isString(item)) {
                     validQuery.populate.push(item);
@@ -58,26 +52,18 @@ function parseQuery(query: string) {
         }
     }
 
-    if (parsedQuery.fields && object.isString(parsedQuery.fields)) {
-        const fields = parsedQuery.fields.split(' ');
-        let exclusion = false;
-        let inclusion = false;
-
-        for (const field of fields) {
-            if (field.length > 0) {
-                if (field[0] === '-') {
-                    exclusion = true;
-                } else {
-                    inclusion = true;
+    if (parsedQuery.fields) {
+        if (Array.isArray(parsedQuery.fields)) {
+            validQuery.fields = [];
+            for (const item of parsedQuery.fields) {
+                if (object.isString(item)) {
+                    validQuery.fields.push(item);
                 }
             }
-            if (exclusion && inclusion) {
-                break;
+        } else {
+            if (object.isString(parsedQuery.fields)) {
+                validQuery.fields = [parsedQuery.fields];
             }
-        }
-
-        if (exclusion !== inclusion) {
-            validQuery.fields = parsedQuery.fields;
         }
     }
 

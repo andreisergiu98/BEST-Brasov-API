@@ -3,32 +3,48 @@ import Koa from 'koa';
 import {config} from '../config';
 import {Controller, mountQueryToState} from '../lib/controller';
 import {sessionStorage} from '../lib/session-storage';
+import {db} from '../lib/db';
 
-import {UserModel} from '../models/user';
+import {User} from '../models/user';
 
 export class UsersController extends Controller {
     @mountQueryToState()
     async getById(ctx: Koa.Context) {
-        if (!this.isObjectIdValid(ctx.params.id)) {
-            ctx.throw(404);
-            return;
+        let user;
+        try {
+            const {query} = ctx.state;
+            user = await db.getConnection().getRepository(User).findOne({
+                where: {id: ctx.params.id},
+                relations: query.populate,
+                select: query.fields,
+            });
+        } catch (e) {
+            ctx.throw(400, e.message);
         }
 
-        const {query} = ctx.state;
-        const user = await UserModel.findById(ctx.params.id).populate(query.populate).select(query.fields).lean();
-
-        if (user) {
-            ctx.status = 200;
-            ctx.body = user;
-        } else {
+        if (!user) {
             ctx.throw(404);
         }
+
+        ctx.body = user;
+        ctx.status = 200;
     }
 
     @mountQueryToState()
     async getAll(ctx: Koa.Context) {
-        const {query} = ctx.state;
-        ctx.body = await UserModel.find(query.conditions).populate(query.populate).select(query.fields).lean();
+        let users;
+        try {
+            const {query} = ctx.state;
+            users = await db.getConnection().getRepository(User).find({
+                where: query.conditions,
+                relations: query.populate,
+                select: query.fields,
+            });
+        } catch (e) {
+            ctx.throw(400, e.message);
+        }
+
+        ctx.body = users;
         ctx.status = 200;
     }
 
@@ -45,15 +61,17 @@ export class UsersController extends Controller {
             return;
         }
 
-        const user = await UserModel.findOne({email: data.email});
+        const user = await db.getConnection().getRepository(User).findOne({
+            where: {email: data.email},
+        });
 
         if (!user) {
             ctx.throw(403);
             return;
         }
 
-        const userData = {id: user._id, name: user.name, role: user.role};
-        const authKey = await sessionStorage.createSession(user._id, userData);
+        const userData = {id: user.id, name: user.name, role: user.role, photo: user.photo};
+        const authKey = await sessionStorage.createSession(user.id, userData);
 
         ctx.cookies.set('auth', authKey, config.cookie);
         ctx.body = userData;

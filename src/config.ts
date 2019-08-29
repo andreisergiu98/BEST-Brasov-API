@@ -1,6 +1,6 @@
 import cors from '@koa/cors';
 import cookies from 'cookies';
-import mongoose from 'mongoose';
+import {ConnectionOptions} from 'typeorm';
 
 interface Config {
     isProduction: boolean;
@@ -9,10 +9,7 @@ interface Config {
     };
     cookie: cookies.SetOption;
     cors: cors.Options;
-    mongo: {
-        url: string;
-        options: mongoose.ConnectionOptions,
-    };
+    postgres: ConnectionOptions;
     redis: {
         url: string;
         databases: {
@@ -33,14 +30,13 @@ export const config: Config = {
         secure: isProduction,
         httpOnly: true,
     },
-    mongo: {
-        url: `mongodb://${process.env.MONGO_DB}`,
-        options: {
-            useNewUrlParser: true,
-            autoReconnect: true,
-            useFindAndModify: false,
-            useCreateIndex: true,
-        },
+    postgres: {
+        name: 'main_db',
+        type: 'postgres',
+        url: process.env.POSTGRES_DB,
+        synchronize: !isProduction,
+        logging: false,
+        entities: [__dirname + '/models/*{.ts, .js}',],
     },
     redis: {
         url: `redis://${process.env.REDIS}`,

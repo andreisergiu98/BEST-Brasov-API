@@ -1,19 +1,21 @@
-import {prop, Typegoose} from 'typegoose';
-import mongoose, {Types} from 'mongoose';
+import {Entity as TypeormEntity, Column, PrimaryGeneratedColumn, ManyToMany} from 'typeorm';
+import {Entity} from './entity';
 
-export class EntityCategory extends Typegoose {
-    _id!: Types.ObjectId;
+@TypeormEntity()
+export class EntityCategory {
+    @PrimaryGeneratedColumn()
+    id?: number;
 
-    createdAt!: Date;
-
-    updatedAt!: Date;
-
-    @prop({required: true, unique: true})
+    @Column({type: 'text'})
     name!: string;
-}
 
-// tslint:disable-next-line:variable-name
-export const EntityCategoryModel = new EntityCategory().getModelForClass(EntityCategory, {
-    schemaOptions: {timestamps: true},
-    existingMongoose: mongoose,
-});
+    @ManyToMany(() => Entity, entity => entity.categories)
+    entities?: Entity[];
+
+    constructor(category?: EntityCategory) {
+        if (category) {
+            this.id = category.id;
+            this.name = category.name;
+        }
+    }
+}

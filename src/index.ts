@@ -5,12 +5,14 @@ import bodyparser from 'koa-bodyparser';
 
 import {catchError, logError} from './middlewares/error';
 
-import {config} from './config';
 import {db} from './lib/db';
 import {sessionStorage} from './lib/session-storage';
-import {dev} from './dev';
 
+import {config} from './config';
 import {routes} from './routes';
+import {Entity} from './models/entity';
+import {MeetingParticipant} from './models/meeting-participant';
+
 
 class App {
     app: Koa;
@@ -20,9 +22,9 @@ class App {
     }
 
     async init() {
-        await db.connect(config.mongo.url);
+        await sessionStorage.connect();
 
-        await sessionStorage.connect(config.redis.url);
+        await db.connect();
 
         this.app.use(logger());
 
@@ -35,11 +37,8 @@ class App {
 
         this.app.use(routes);
 
-        if (!config.isProduction) {
-            await dev.init();
-        }
-
         this.app.listen(config.node.port);
+
         console.log(`Server is running on port ${config.node.port}`);
     }
 }

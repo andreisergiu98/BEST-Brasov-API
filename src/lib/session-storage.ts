@@ -3,9 +3,10 @@ import {RedisClient} from './redis';
 import {config} from '../config';
 
 interface SessionData {
-    id: string;
+    id: number;
     name: string;
     role: string;
+    photo?: string;
     expires?: number;
 }
 
@@ -13,7 +14,11 @@ class SessionStorage extends RedisClient {
     private defaultExp = 7 * 24 * 60 * 60;
     private separator = '-';
 
-    createSession(userId: string, data: SessionData, exp = this.defaultExp): Promise<string> {
+    connect() {
+        return super.connect(config.redis.url);
+    }
+
+    createSession(userId: number, data: SessionData, exp = this.defaultExp): Promise<string> {
         return new Promise((resolve, reject) => {
             const session = userId + this.separator + uuid();
             data.expires = Date.now() + exp * 1000;
@@ -40,7 +45,7 @@ class SessionStorage extends RedisClient {
         return this.client.del(session);
     }
 
-    deleteAllSessions(userId: string) {
+    deleteAllSessions(userId: number) {
         return new Promise((resolve, reject) => {
             const stream = this.client.scanStream({
                 match: userId + this.separator + '*',
@@ -63,7 +68,7 @@ class SessionStorage extends RedisClient {
         });
     }
 
-    updateData(userId: string, data: SessionData) {
+    updateData(userId: number, data: SessionData) {
         return new Promise((resolve, reject) => {
             const stream = this.client.scanStream({
                 match: userId + this.separator + '*',
