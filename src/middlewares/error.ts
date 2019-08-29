@@ -19,6 +19,6 @@ export const catchError = async (ctx: Koa.Context, next: Function) => {
     }
 };
 
-export const logError = (err: Error) => {
-    console.log(err);
+export const logError = (e: Error) => {
+    console.log(e.message);
 };
