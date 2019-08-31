@@ -19,9 +19,9 @@ class App {
     }
 
     async init() {
-        await sessionStorage.connect();
-
         await db.connect();
+
+        await sessionStorage.connect();
 
         this.app.use(logger());
 

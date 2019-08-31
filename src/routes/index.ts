@@ -3,8 +3,6 @@ import Router from 'koa-router';
 import {RBAC} from '../lib/rbac';
 import {authentication} from '../middlewares/authentication';
 
-// import * as events from './events';
-// import * as callingSessions from './calling-sessions';
 import {UsersController} from '../controllers/users';
 import {EntitiesController} from '../controllers/entities';
 import {MeetingsController} from '../controllers/meetings';
@@ -40,13 +38,5 @@ router.get('/meetings', meetings.getAll);
 
 // Comments requests
 router.post('/comments', RBAC.restrictAccess(RBAC.roles.user), comments.create);
-
-// Events requests
-// router.get('/events', events.getAll);
-// router.get('/events/:id', events.getById);
-
-// Calling Sessions requests
-// router.get('/calling-sessions', callingSessions.getAll);
-// router.get('/calling-sessions/:id', callingSessions.getById);
 
 export const routes = router.routes();
