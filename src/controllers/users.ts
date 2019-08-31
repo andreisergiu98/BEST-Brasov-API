@@ -9,11 +9,28 @@ import {User} from '../models/user';
 
 export class UsersController extends Controller {
     @mountQueryToState()
+    async getAll(ctx: Koa.Context) {
+        try {
+            const {query} = ctx.state;
+            ctx.body = await db.getConnection().manager.find(User, {
+                where: query.conditions,
+                relations: query.populate,
+                select: query.fields,
+                skip: query.offset,
+                take: query.limit,
+            });
+        } catch (e) {
+            ctx.throw(400, e.message);
+        }
+        ctx.status = 200;
+    }
+
+    @mountQueryToState()
     async getById(ctx: Koa.Context) {
         let user;
         try {
             const {query} = ctx.state;
-            user = await db.getConnection().getRepository(User).findOne({
+            user = await db.getConnection().manager.findOne(User, {
                 where: {id: ctx.params.id},
                 relations: query.populate,
                 select: query.fields,
@@ -30,29 +47,6 @@ export class UsersController extends Controller {
         ctx.status = 200;
     }
 
-    @mountQueryToState()
-    async getAll(ctx: Koa.Context) {
-        let users;
-        try {
-            const {query} = ctx.state;
-            users = await db.getConnection().getRepository(User).find({
-                where: query.conditions,
-                relations: query.populate,
-                select: query.fields,
-            });
-        } catch (e) {
-            ctx.throw(400, e.message);
-        }
-
-        ctx.body = users;
-        ctx.status = 200;
-    }
-
-    async authenticate(ctx: Koa.Context) {
-        ctx.body = ctx.state.user;
-        ctx.status = 200;
-    }
-
     async login(ctx: Koa.Context) {
         const data = ctx.request.body;
 
@@ -61,7 +55,7 @@ export class UsersController extends Controller {
             return;
         }
 
-        const user = await db.getConnection().getRepository(User).findOne({
+        const user = await db.getConnection().manager.findOne(User, {
             where: {email: data.email},
         });
 
@@ -70,11 +64,13 @@ export class UsersController extends Controller {
             return;
         }
 
-        const userData = {id: user.id, name: user.name, role: user.role, photo: user.photo};
-        const authKey = await sessionStorage.createSession(user.id, userData);
-
+        const authKey = await sessionStorage.createSession(user.id, user);
         ctx.cookies.set('auth', authKey, config.cookie);
-        ctx.body = userData;
+        ctx.status = 204;
+    }
+
+    async authenticate(ctx: Koa.Context) {
+        ctx.body = ctx.state.user;
         ctx.status = 200;
     }
 }

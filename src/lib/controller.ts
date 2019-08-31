@@ -27,9 +27,11 @@ export function mountQueryToState() {
 
 function parseQuery(query: string) {
     const validQuery = {
+        conditions: {},
         populate: undefined as string[] | undefined,
         fields: undefined as string[] | undefined,
-        conditions: {},
+        limit: undefined as number | undefined,
+        offset: undefined as number | undefined,
     };
 
     const parsedQuery = qs.parse(query);
@@ -65,6 +67,16 @@ function parseQuery(query: string) {
                 validQuery.fields = [parsedQuery.fields];
             }
         }
+    }
+
+    const limit = Number(parsedQuery.limit);
+    if (!isNaN(limit) && limit > 0) {
+        validQuery.limit = limit;
+    }
+
+    const offset = Number(parsedQuery.offset);
+    if (!isNaN(offset) && offset > 0) {
+        validQuery.offset = parsedQuery.offset;
     }
 
     if (object.isPlainObject(parsedQuery.conditions)) {
