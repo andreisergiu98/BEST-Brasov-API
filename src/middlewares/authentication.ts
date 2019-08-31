@@ -25,13 +25,10 @@ export const authentication = async (ctx: Koa.Context, next: Function) => {
         return;
     }
 
-    if (data.expires) {
-        let remainingDays = new Date(data.expires).getTime() - Date.now();
-        remainingDays = remainingDays / 1000 / 60 / 60 / 24;
-
-        if (remainingDays < 1) {
-            await sessionStorage.extendSession(authKey, data);
-        }
+    let remainingDays = new Date(data.expires).getTime() - Date.now();
+    remainingDays = remainingDays / 1000 / 60 / 60 / 24;
+    if (remainingDays < 1) {
+        await sessionStorage.extendSession(authKey, data);
     }
 
     ctx.state.user = data;

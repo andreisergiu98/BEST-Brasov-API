@@ -1,115 +1,92 @@
 import uuid from 'uuid/v4';
 import {RedisClient} from './redis';
 import {config} from '../config';
+import {User} from '../models/user';
 
 interface SessionData {
     id: number;
     name: string;
     role: string;
     photo?: string;
-    expires?: number;
+    expires: number;
 }
 
 class SessionStorage extends RedisClient {
     private defaultExp = 7 * 24 * 60 * 60;
     private separator = '-';
 
-    connect() {
+    async connect() {
         return super.connect(config.redis.url);
     }
 
-    createSession(userId: number, data: SessionData, exp = this.defaultExp): Promise<string> {
-        return new Promise((resolve, reject) => {
-            const session = userId + this.separator + uuid();
-            data.expires = Date.now() + exp * 1000;
-
-            this.client.set(session, JSON.stringify(data), 'EX', exp)
-                .then(() => resolve(session))
-                .catch(e => reject(e));
-        });
+    async createSession(userId: number, user: User, exp = this.defaultExp) {
+        const session = userId + this.separator + uuid();
+        const data = {
+            ...this.stripUserData(user),
+            expires: Date.now() + exp * 1000,
+        };
+        await this.client.set(session, JSON.stringify(data), 'EX', exp);
+        return session;
     }
 
-    getSession(session: string): Promise<SessionData | undefined> {
-        return new Promise((resolve, reject) => {
-            this.client.get(session).then(res => {
-                if (res) {
-                    resolve(JSON.parse(res));
-                } else {
-                    resolve();
-                }
-            }).catch(e => reject(e));
-        });
+    async getSession(session: string): Promise<SessionData | undefined> {
+        const res = await this.client.get(session);
+        if (res) {
+            return JSON.parse(res);
+        }
     }
 
-    deleteSession(session: string) {
+    async deleteSession(session: string) {
         return this.client.del(session);
     }
 
-    deleteAllSessions(userId: number) {
-        return new Promise((resolve, reject) => {
-            const stream = this.client.scanStream({
-                match: userId + this.separator + '*',
-                count: 100,
-            });
-
-            const keys: string[] = [];
-
-            stream.on('data', resultKeys => {
-                for (let i = 0; i < resultKeys.length; i++) {
-                    keys.push(resultKeys[i]);
-                }
-            });
-
-            stream.on('end', () => {
-                // tslint:disable-next-line:ban-ts-ignore
-                // @ts-ignore
-                this.client.unlink(keys).then(() => resolve()).catch(e => reject(e));
-            });
+    async deleteAllSessions(userId: number) {
+        const keys = await this.scanStream({
+            match: userId + this.separator + '*',
+            count: 100,
         });
+        if (keys.length !== 0) {
+            // tslint:disable-next-line:ban-ts-ignore
+            // @ts-ignore
+            await this.client.unlink(keys);
+        }
     }
 
-    updateData(userId: number, data: SessionData) {
-        return new Promise((resolve, reject) => {
-            const stream = this.client.scanStream({
-                match: userId + this.separator + '*',
-                count: 100,
-            });
-
-            const keys: string[] = [];
-
-            stream.on('data', resultKeys => {
-                for (let i = 0; i < resultKeys.length; i++) {
-                    keys.push(resultKeys[i]);
-                }
-            });
-
-            const promises: Array<Promise<string>> = [];
-
-            stream.on('end', () => {
-                for (const key of keys) {
-                    let ttl = this.defaultExp;
-
-                    if (data.expires) {
-                        ttl = new Date(data.expires).getTime() - Date.now();
-                        ttl = Math.floor(ttl / 1000);
-                    }
-
-                    promises.push(this.client.set(key, JSON.stringify(data), 'EX', ttl));
-                }
-
-                Promise.all(promises).then(() => resolve()).catch(e => reject(e));
-            });
+    async updateData(userId: number, user: User) {
+        const keys = await this.scanStream({
+            match: userId + this.separator + '*',
+            count: 100,
         });
+
+        const promises = [];
+
+        for (const key of keys) {
+            const session = await this.getSession(key);
+            if(!session) continue;
+
+            const data = JSON.stringify({
+                ...this.stripUserData(user),
+                expires: session.expires,
+            });
+            const ttl = this.calcTtl(session.expires);
+            promises.push(this.client.set(key, data, 'EX', ttl));
+        }
+
+        return Promise.all(promises);
     }
 
-    extendSession(session: string, data: SessionData, exp = this.defaultExp) {
-        return new Promise((resolve, reject) => {
-            data.expires = Date.now() + exp * 1000;
+    async extendSession(session: string, data: SessionData, exp = this.defaultExp) {
+        data.expires = Date.now() + exp * 1000;
+        return this.client.set(session, JSON.stringify(data), 'EX', exp);
+    }
 
-            this.client.set(session, JSON.stringify(data), 'EX', exp)
-                .then(() => resolve(session))
-                .catch(e => reject(e));
-        });
+    private stripUserData(user: User) {
+        return {
+            id: user.id,
+            name: user.name,
+            role: user.role,
+            photo: user.photo,
+        };
     }
 }
 

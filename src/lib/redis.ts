@@ -1,4 +1,4 @@
-import Redis from 'ioredis';
+import Redis, {ScanStreamOption} from 'ioredis';
 
 export class RedisClient {
     private readonly db!: number;
@@ -24,5 +24,28 @@ export class RedisClient {
             });
 
         });
+    }
+
+    async scanStream(options: ScanStreamOption): Promise<string[]> {
+        return new Promise((resolve, reject) => {
+            const keys: string[] = [];
+            const stream = this.client.scanStream(options);
+            stream.on('data', resultKeys => {
+                for (let i = 0; i < resultKeys.length; i++) {
+                    keys.push(resultKeys[i]);
+                }
+            });
+            stream.on('end', () => {
+                resolve(keys);
+            });
+            stream.on('error', err => {
+                reject(err);
+            });
+        });
+    }
+
+    calcTtl(timestamp: number) {
+        const ttl = new Date(timestamp).getTime() - Date.now();
+        return Math.floor(ttl / 1000);
     }
 }
