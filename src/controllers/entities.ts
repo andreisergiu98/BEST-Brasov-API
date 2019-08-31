@@ -1,16 +1,15 @@
 import Koa from 'koa';
 
-import {Controller, mountQueryToState} from '../lib/controller';
+import {Controller} from '../lib/controller';
 import {db} from '../lib/db';
 
 import {EntityCategory} from '../models/entity-category';
 import {Entity} from '../models/entity';
 
 export class EntitiesController extends Controller {
-    @mountQueryToState()
     async getAll(ctx: Koa.Context) {
+        const query = this.parseQuery(ctx.query);
         try {
-            const {query} = ctx.state;
             ctx.body = await db.getConnection().manager.find(Entity, {
                 where: query.conditions,
                 relations: query.populate,
@@ -24,11 +23,10 @@ export class EntitiesController extends Controller {
         ctx.status = 200;
     }
 
-    @mountQueryToState()
     async getById(ctx: Koa.Context) {
+        const query = this.parseQuery(ctx.query);
         let entity;
         try {
-            const {query} = ctx.state;
             entity = await db.getConnection().manager.findOne(Entity, {
                 where: {id: ctx.params.id},
                 relations: query.populate,
@@ -46,12 +44,11 @@ export class EntitiesController extends Controller {
         ctx.status = 200;
     }
 
-    @mountQueryToState()
     async getCategories(ctx: Koa.Context) {
+        const query = this.parseQuery(ctx.query);
         try {
-            const {query} = ctx.state;
             ctx.body = await db.getConnection().manager.find(EntityCategory, {
-                where: query.condition,
+                where: query.conditions,
                 relations: query.populate,
                 select: query.fields,
                 skip: query.offset,

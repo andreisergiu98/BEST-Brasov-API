@@ -1,15 +1,14 @@
 import Koa from 'koa';
 
-import {Controller, mountQueryToState} from '../lib/controller';
+import {Controller} from '../lib/controller';
 import {db} from '../lib/db';
 
 import {Meeting} from '../models/meeting';
 
 export class MeetingsController extends Controller {
-    @mountQueryToState()
     async getAll(ctx: Koa.Context) {
+        const query = this.parseQuery(ctx.query);
         try {
-            const {query} = ctx.state;
             ctx.body = await db.getConnection().manager.find(Meeting, {
                 where: query.conditions,
                 relations: query.populate,

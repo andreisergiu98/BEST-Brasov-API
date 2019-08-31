@@ -1,17 +1,16 @@
 import Koa from 'koa';
 
 import {config} from '../config';
-import {Controller, mountQueryToState} from '../lib/controller';
+import {Controller} from '../lib/controller';
 import {sessionStorage} from '../lib/session-storage';
 import {db} from '../lib/db';
 
 import {User} from '../models/user';
 
 export class UsersController extends Controller {
-    @mountQueryToState()
     async getAll(ctx: Koa.Context) {
+        const query = this.parseQuery(ctx.query);
         try {
-            const {query} = ctx.state;
             ctx.body = await db.getConnection().manager.find(User, {
                 where: query.conditions,
                 relations: query.populate,
@@ -25,11 +24,10 @@ export class UsersController extends Controller {
         ctx.status = 200;
     }
 
-    @mountQueryToState()
     async getById(ctx: Koa.Context) {
+        const query = this.parseQuery(ctx.query);
         let user;
         try {
-            const {query} = ctx.state;
             user = await db.getConnection().manager.findOne(User, {
                 where: {id: ctx.params.id},
                 relations: query.populate,
