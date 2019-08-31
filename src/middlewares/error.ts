@@ -1,21 +1,17 @@
 import Koa from 'koa';
+import {config} from '../config';
 
 export const catchError = async (ctx: Koa.Context, next: Function) => {
     try {
         await next();
     } catch (e) {
         ctx.status = e.status || 500;
+        ctx.body = e.message;
 
         if (ctx.status === 500) {
+            ctx.body = 'Internal Server Error';
             ctx.app.emit('error', e, ctx);
-            return;
         }
-
-        if (process.env.NODE_ENV === 'development') {
-            console.log(e.message);
-        }
-
-        ctx.body = e.message;
     }
 };
 
