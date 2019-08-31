@@ -3,8 +3,7 @@
   "env": {
     "NODE_ENV": "development",
     "PORT": 8081,
-    "JWT_SIGN_KEY": "dev",
-    "POSTGRES_DB": "postgres://root:root@db/bestbrasov",
+    "POSTGRES": "postgres://root:root@db/bestbrasov",
     "REDIS": "redis:6379"
   }
 }

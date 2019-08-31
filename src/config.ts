@@ -1,47 +1,31 @@
 import cors from '@koa/cors';
 import cookies from 'cookies';
-import {ConnectionOptions} from 'typeorm';
-
-interface Config {
-    isProduction: boolean;
-    node: {
-        port: string | number;
-    };
-    cookie: cookies.SetOption;
-    cors: cors.Options;
-    postgres: ConnectionOptions;
-    redis: {
-        url: string;
-        databases: {
-            sessionStorage: number
-        };
-    };
-}
+import typeorm from 'typeorm';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-export const config: Config = {
+export const config = {
     isProduction,
     cors: {
         credentials: true,
         origin: ctx => ctx.request.header.origin,
-    },
+    } as cors.Options,
     cookie: {
         secure: isProduction,
         httpOnly: true,
-    },
+    } as cookies.SetOption,
     postgres: {
         name: 'main_db',
         type: 'postgres',
-        url: process.env.POSTGRES_DB,
+        url: process.env.POSTGRES,
         synchronize: !isProduction,
         logging: false,
-        entities: [__dirname + '/models/*{.ts, .js}',],
-    },
+        entities: [`${__dirname}/models/*.${isProduction ? 'js' : 'ts'}`],
+    } as typeorm.ConnectionOptions,
     redis: {
         url: `redis://${process.env.REDIS}`,
         databases: {
-          sessionStorage: 0,
+            sessionStorage: 0,
         },
     },
     node: {
