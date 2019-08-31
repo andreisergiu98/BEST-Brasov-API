@@ -5,7 +5,6 @@ import {db} from '../lib/db';
 
 import {EntityCategory} from '../models/entity-category';
 import {Entity} from '../models/entity';
-import {Comment} from '../models/comment';
 
 export class EntitiesController extends Controller {
     @mountQueryToState()
@@ -90,33 +89,6 @@ export class EntitiesController extends Controller {
             ctx.throw(400, e.message);
         }
         ctx.body = entity;
-        ctx.status = 200;
-    }
-
-    async addComment(ctx: Koa.Context) {
-        const data = ctx.request.body as { id: string, comment: Comment };
-
-        const user = ctx.state.user;
-        const entity = await db.getConnection().getRepository(Entity).findOne({
-            where: {id: data.id},
-        });
-
-        if (!entity) {
-            ctx.throw(404);
-            return;
-        }
-
-        const comment = new Comment({
-            text: data.comment.text,
-            entityId: entity.id,
-            userId: user.id,
-            date: new Date(),
-        });
-        comment.user = user;
-
-        await db.getConnection().manager.save(comment);
-
-        ctx.body = comment;
         ctx.status = 200;
     }
 }
