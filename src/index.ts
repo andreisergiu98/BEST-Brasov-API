@@ -10,9 +10,6 @@ import {sessionStorage} from './lib/session-storage';
 
 import {config} from './config';
 import {routes} from './routes';
-import {Entity} from './models/entity';
-import {MeetingParticipant} from './models/meeting-participant';
-
 
 class App {
     app: Koa;
@@ -39,7 +36,7 @@ class App {
 
         this.app.listen(config.node.port);
 
-        console.log(`Server is running on port ${config.node.port}`);
+        console.log(`Server is running on port ${config.node.port}\n`);
     }
 }
 
