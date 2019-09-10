@@ -11,8 +11,8 @@ interface SessionData {
     name: string;
     role: string;
     photo?: string;
-    expires: number;
     device: Device;
+    expires: number;
 }
 
 class SessionStorage extends RedisClient {
@@ -88,8 +88,8 @@ class SessionStorage extends RedisClient {
             name: user.name,
             role: user.role,
             photo: user.photo,
-            expires,
             device: deviceInfo,
+            expires,
         };
     }
 }

@@ -11,8 +11,8 @@ export const config = {
         origin: ctx => ctx.request.header.origin,
     } as cors.Options,
     auth: {
-        maxAge: 7 * 24 * 60 * 60 * 1000,
         cookieKey: 'auth',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
         cookieOptions: {
             secure: isProduction,
             httpOnly: true,
@@ -29,7 +29,7 @@ export const config = {
         entities: [`${__dirname}/models/*.${isProduction ? 'js' : 'ts'}`],
     } as typeorm.ConnectionOptions,
     redis: {
-        url: `redis://${process.env.REDIS}`,
+        url: process.env.REDIS,
         databases: {
             sessionStorage: 0,
         },

@@ -1,5 +1,6 @@
 import qs from 'qs';
 import autoBind from 'auto-bind';
+
 import {object} from '../utils/object';
 
 export class Controller {
@@ -7,7 +8,7 @@ export class Controller {
         autoBind(this as {});
     }
 
-    parseQuery = (query: string) => {
+    parseQuery(query: string) {
         const validQuery = {
             // tslint:disable-next-line:no-any
             fields: undefined as any[] | undefined,
