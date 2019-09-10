@@ -1,6 +1,6 @@
 import Koa from 'koa';
-import logger from 'koa-logger';
 import cors from '@koa/cors';
+import logger from 'koa-logger';
 import bodyparser from 'koa-bodyparser';
 
 import {catchError, logError} from './middlewares/error';
@@ -18,7 +18,7 @@ class App {
         this.app = new Koa();
     }
 
-    async init() {
+    private async initAsync() {
         await db.connect();
 
         await sessionStorage.connect();
@@ -35,11 +35,16 @@ class App {
         this.app.use(routes);
 
         this.app.listen(config.node.port);
+    }
 
-        console.log(`Server is running on port ${config.node.port}\n`);
+    init() {
+        this.initAsync().then(() => {
+            console.log(`Server is running on port ${config.node.port}\n`);
+        }).catch((e) => {
+            console.log(e.message);
+        });
     }
 }
 
 const app = new App();
-
-app.init().then().catch(e => console.log(e.message));
+app.init();
