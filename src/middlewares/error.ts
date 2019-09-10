@@ -1,5 +1,4 @@
 import Koa from 'koa';
-import {config} from '../config';
 
 export const catchError = async (ctx: Koa.Context, next: Function) => {
     try {

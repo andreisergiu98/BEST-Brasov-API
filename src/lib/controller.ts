@@ -1,4 +1,3 @@
-import Koa from 'koa';
 import qs from 'qs';
 import autoBind from 'auto-bind';
 import {object} from '../utils/object';
@@ -10,10 +9,10 @@ export class Controller {
 
     parseQuery = (query: string) => {
         const validQuery = {
-            conditions: {} as object,
-            populate: undefined as string[] | undefined,
             // tslint:disable-next-line:no-any
             fields: undefined as any[] | undefined,
+            conditions: {} as object,
+            populate: undefined as string[] | undefined,
             limit: undefined as number | undefined,
             offset: undefined as number | undefined,
         };
