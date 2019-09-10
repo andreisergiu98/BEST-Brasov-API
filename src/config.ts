@@ -2,7 +2,7 @@ import cors from '@koa/cors';
 import cookies from 'cookies';
 import typeorm from 'typeorm';
 
-const isProduction = process.env.NODE_ENV === 'production';
+const isProduction: boolean = process.env.NODE_ENV === 'production';
 
 export const config = {
     isProduction,
@@ -10,12 +10,18 @@ export const config = {
         credentials: true,
         origin: ctx => ctx.request.header.origin,
     } as cors.Options,
-    cookie: {
-        secure: isProduction,
-        httpOnly: true,
-    } as cookies.SetOption,
+    auth: {
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        cookieKey: 'auth',
+        cookieOptions: {
+            secure: isProduction,
+            httpOnly: true,
+            overwrite: true,
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        } as cookies.SetOption,
+    },
     postgres: {
-        name: 'main_db',
+        name: 'postgres',
         type: 'postgres',
         url: process.env.POSTGRES,
         synchronize: !isProduction,
