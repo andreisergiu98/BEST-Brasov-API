@@ -11,7 +11,7 @@ export class UsersController extends Controller {
     async getAll(ctx: Koa.Context) {
         const query = this.parseQuery(ctx.query);
         try {
-            ctx.body = await db.getConnection().manager.find(User, {
+            ctx.body = await db.getManager().find(User, {
                 where: query.conditions,
                 relations: query.populate,
                 select: query.fields,
@@ -28,7 +28,7 @@ export class UsersController extends Controller {
         const query = this.parseQuery(ctx.query);
         let user;
         try {
-            user = await db.getConnection().manager.findOne(User, {
+            user = await db.getManager().findOne(User, {
                 where: {id: ctx.params.id},
                 relations: query.populate,
                 select: query.fields,
@@ -46,24 +46,22 @@ export class UsersController extends Controller {
     }
 
     async login(ctx: Koa.Context) {
-        const data = ctx.request.body;
+        const data = ctx.request.body as { email?: string };
 
         if (!data.email) {
             ctx.throw(400);
             return;
         }
 
-        const user = await db.getConnection().manager.findOne(User, {
-            where: {email: data.email},
-        });
+        const user = await db.getManager().findOne(User, {where: {email: data.email}});
 
         if (!user) {
             ctx.throw(403);
             return;
         }
 
-        const authKey = await sessionStorage.createSession(user.id, user);
-        ctx.cookies.set('auth', authKey, config.cookie);
+        const authKey = await sessionStorage.createSession(user.id, user, ctx.headers['user-agent']);
+        ctx.cookies.set(config.auth.cookieKey, authKey, config.auth.cookieOptions);
         ctx.status = 204;
     }
 

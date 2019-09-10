@@ -7,21 +7,25 @@ import {Comment} from '../models/comment';
 
 export class CommentsController extends Controller {
     async create(ctx: Koa.Context) {
-        const data = ctx.request.body as Comment;
+        const data = ctx.request.body as Comment | undefined;
         const user = ctx.state.user;
+
+        if (!data) {
+            ctx.throw(400);
+            return;
+        }
 
         if (!data.entityId) {
             ctx.throw(400);
         }
 
-        const comment = new Comment({
-            ...data,
-            userId: user.id,
-            date: new Date(),
-        });
+        data.userId = user.id;
+        data.date = new Date();
+
+        const comment = new Comment(data);
         comment.user = user;
 
-        await db.getConnection().manager.save(comment);
+        await db.getManager().save(comment);
 
         ctx.body = comment;
         ctx.status = 200;

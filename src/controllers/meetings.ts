@@ -9,7 +9,7 @@ export class MeetingsController extends Controller {
     async getAll(ctx: Koa.Context) {
         const query = this.parseQuery(ctx.query);
         try {
-            ctx.body = await db.getConnection().manager.find(Meeting, {
+            ctx.body = await db.getManager().find(Meeting, {
                 where: query.conditions,
                 relations: query.populate,
                 select: query.fields,

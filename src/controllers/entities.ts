@@ -10,7 +10,7 @@ export class EntitiesController extends Controller {
     async getAll(ctx: Koa.Context) {
         const query = this.parseQuery(ctx.query);
         try {
-            ctx.body = await db.getConnection().manager.find(Entity, {
+            ctx.body = await db.getManager().find(Entity, {
                 where: query.conditions,
                 relations: query.populate,
                 select: query.fields,
@@ -27,7 +27,7 @@ export class EntitiesController extends Controller {
         const query = this.parseQuery(ctx.query);
         let entity;
         try {
-            entity = await db.getConnection().manager.findOne(Entity, {
+            entity = await db.getManager().findOne(Entity, {
                 where: {id: ctx.params.id},
                 relations: query.populate,
                 select: query.fields,
@@ -47,7 +47,7 @@ export class EntitiesController extends Controller {
     async getCategories(ctx: Koa.Context) {
         const query = this.parseQuery(ctx.query);
         try {
-            ctx.body = await db.getConnection().manager.find(EntityCategory, {
+            ctx.body = await db.getManager().find(EntityCategory, {
                 where: query.conditions,
                 relations: query.populate,
                 select: query.fields,
@@ -61,10 +61,16 @@ export class EntitiesController extends Controller {
     }
 
     async createOne(ctx: Koa.Context) {
-        const data = ctx.request.body;
+        const data = ctx.request.body as Entity | undefined;
+
+        if (!data) {
+            ctx.throw(400);
+            return;
+        }
+
         try {
-            data.id = null;
-            ctx.body = await db.getConnection().manager.save(new Entity(data.body));
+            data.id = NaN;
+            ctx.body = await db.getManager().save(new Entity(data));
         } catch (e) {
             ctx.throw(400, e.message);
         }
@@ -72,12 +78,18 @@ export class EntitiesController extends Controller {
     }
 
     async updateOne(ctx: Koa.Context) {
-        const data = ctx.request.body;
-        if (await db.getConnection().manager.count(Entity, {id: data.id}) === 0) {
+        const data = ctx.request.body as Entity | undefined;
+
+        if (!data) {
+            ctx.throw(400);
+            return;
+        }
+
+        if (await db.getManager().count(Entity, {id: data.id}) === 0) {
             ctx.throw(404);
         }
         try {
-            ctx.body = await db.getConnection().manager.save(new Entity(data));
+            ctx.body = await db.getManager().save(new Entity(data));
         } catch (e) {
             ctx.throw(400, e.message);
         }
