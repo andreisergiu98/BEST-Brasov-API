@@ -1,4 +1,5 @@
 import Redis, {ScanStreamOption} from 'ioredis';
+import {config} from '../config';
 
 export class RedisClient {
     private readonly db!: number;
@@ -8,22 +9,28 @@ export class RedisClient {
         this.db = db;
     }
 
-    async connect(url: string) {
+    async connect() {
         return new Promise((resolve, reject) => {
-            this.client = new Redis(url + '/' + this.db);
+            this.client = new Redis(config.redis.url + '/' + this.db);
 
-            console.log(`Connecting to Redis-${this.db}...`);
+            console.log(`Connecting to redis:${this.db}...`);
 
             this.client.on('error', e => {
                 reject(e);
             });
 
             this.client.on('ready', () => {
-                console.log(`Redis-${this.db} connection is ready!\n`);
+                console.log(`Connected to redis:${this.db}!\n`);
                 resolve();
             });
-
         });
+    }
+
+    async unlink(keys: string[]): Promise<undefined> {
+        // TODO pull request or issue to DefinitelyTyped
+        // tslint:disable-next-line:ban-ts-ignore
+        // @ts-ignore
+        return this.client.unlink(keys);
     }
 
     async scanStream(options: ScanStreamOption): Promise<string[]> {
@@ -42,10 +49,5 @@ export class RedisClient {
                 reject(err);
             });
         });
-    }
-
-    calcTtl(timestamp: number) {
-        const ttl = new Date(timestamp).getTime() - Date.now();
-        return Math.floor(ttl / 1000);
     }
 }
