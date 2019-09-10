@@ -5,36 +5,37 @@
   "license": "GPL-3.0-or-later",
   "scripts": {
     "start": "docker-compose down && docker-compose up -d && docker logs BEST_api_node --follow",
-    "stop": "docker-compose down",
     "build": "tsc -p .",
     "dev:start": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts"
   },
   "dependencies": {
     "@koa/cors": "^3.0.0",
+    "@koa/router": "^8.0.1",
     "auto-bind": "^2.1.0",
-    "ioredis": "^4.11.2",
-    "koa": "^2.6.1",
+    "ioredis": "^4.14.1",
+    "koa": "^2.8.1",
     "koa-bodyparser": "^4.2.1",
-    "koa-logger": "^3.2.0",
-    "koa-router": "^7.4.0",
+    "koa-logger": "^3.2.1",
     "pg": "^7.12.1",
-    "qs": "^6.7.0",
+    "qs": "^6.8.0",
     "typeorm": "^0.2.18",
-    "uuid": "^3.3.2"
+    "ua-parser-js": "^0.7.20",
+    "uuid": "^3.3.3"
   },
   "devDependencies": {
-    "@types/ioredis": "^4.0.13",
-    "@types/koa": "^2.0.48",
-    "@types/koa-bodyparser": "^4.2.1",
+    "@types/ioredis": "^4.0.16",
+    "@types/koa": "^2.0.49",
+    "@types/koa-bodyparser": "^5.0.2",
     "@types/koa-logger": "^3.1.1",
-    "@types/koa-router": "^7.0.35",
     "@types/koa__cors": "^2.2.3",
-    "@types/node": "^12.7.2",
+    "@types/koa__router": "^8.0.0",
+    "@types/node": "^12.7.4",
     "@types/qs": "^6.5.3",
+    "@types/ua-parser-js": "^0.7.33",
     "@types/uuid": "^3.4.5",
-    "nodemon": "^1.18.6",
-    "ts-node": "^8.0.2",
-    "tslint": "^5.16.0",
-    "typescript": "^3.4.5"
+    "nodemon": "^1.19.2",
+    "ts-node": "^8.3.0",
+    "tslint": "^5.19.0",
+    "typescript": "^3.6.2"
   }
 }
