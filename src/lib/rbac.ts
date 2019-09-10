@@ -41,15 +41,17 @@ export class RBAC {
         };
     }
 
-    static roles = {
+    static roles: { [key: string]: Role } = {
         superAdmin: {
             id: 'super_admin',
             level: -1,
-        } as Role,
+            canBePromotedBy: [],
+        },
         admin: {
             id: 'admin',
             level: 0,
-        } as Role,
+            canBePromotedBy: [],
+        },
         mdv: {
             id: 'mdv',
             level: 25,
@@ -59,26 +61,26 @@ export class RBAC {
             id: 'moderator',
             level: 50,
             canBePromotedBy: ['admin', 'mdv'],
-        } as Role,
+        },
         coordinator: {
             id: 'coordinator',
             level: 75,
             canBePromotedBy: ['admin', 'mdv'],
-        } as Role,
+        },
         teamMember: {
             id: 'core_team_member',
             level: 100,
             canBePromotedBy: ['admin', 'mdv', 'moderator', 'coordinator'],
-        } as Role,
+        },
         user: {
             id: 'user',
             level: 150,
-            canBePromotedBy: ['admin', 'mdv','moderator', 'coordinator'],
-        } as Role,
+            canBePromotedBy: ['admin', 'mdv', 'moderator', 'coordinator'],
+        },
         guest: {
             id: 'guest',
             level: 1000,
             canBePromotedBy: ['admin'],
-        } as Role,
+        },
     };
 }
