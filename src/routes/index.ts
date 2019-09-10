@@ -1,4 +1,4 @@
-import Router from 'koa-router';
+import Router from '@koa/router';
 
 import {RBAC} from '../lib/rbac';
 import {authentication} from '../middlewares/authentication';
