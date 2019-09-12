@@ -42,14 +42,12 @@ class SessionStorage extends RedisClient {
         });
 
         let promises = [];
-
         for (const key of keys) {
             promises.push(this.getSessionWithKey(key));
         }
-
         const sessions = await Promise.all(promises);
-        promises = [];
 
+        promises = [];
         for (const session of sessions) {
             if (!session.data) continue;
             const ttl = session.data.expires - Date.now();
@@ -75,7 +73,7 @@ class SessionStorage extends RedisClient {
             count: 100,
         });
         if (keys.length === 0) return;
-        await this.unlink(keys);
+        return this.unlink(keys);
     }
 
     private static buildData(user: User, deviceInfo: Device | string, expires?: number) {
