@@ -23,7 +23,7 @@ class SessionStorage extends RedisClient {
         return res ? JSON.parse(res) : undefined;
     }
 
-    async getSessionWithKey(key: string): Promise<{ key: string, data?: SessionData }> {
+    async getSessionWithKey(key: string): Promise<{ key: string, data: SessionData | undefined }> {
         const data = await this.getSession(key);
         return {key, data};
     }
@@ -36,10 +36,7 @@ class SessionStorage extends RedisClient {
     }
 
     async updateData(userId: number, user: User) {
-        const keys = await this.scanStream({
-            match: userId + this.separator + '*',
-            count: 100,
-        });
+        const keys = await this.scanStream({match: userId + this.separator + '*'});
 
         let promises = [];
         for (const key of keys) {
@@ -68,16 +65,16 @@ class SessionStorage extends RedisClient {
     }
 
     async deleteAllSessions(userId: number) {
-        const keys = await this.scanStream({
-            match: userId + this.separator + '*',
-            count: 100,
-        });
+        const keys = await this.scanStream({match: userId + this.separator + '*'});
         if (keys.length === 0) return;
-        return this.unlink(keys);
+        // TODO Pull request for DefinitelyTyped approved, delete @ts-ignore after merge.
+        // tslint:disable-next-line:ban-ts-ignore
+        // @ts-ignore
+        return this.client.unlink(...keys);
     }
 
     private static buildData(user: User, deviceInfo: Device | string, expires?: number) {
-        if(typeof deviceInfo === 'string') {
+        if (typeof deviceInfo === 'string') {
             deviceInfo = device.getInfo(deviceInfo);
         }
 

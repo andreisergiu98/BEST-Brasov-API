@@ -1,6 +1,6 @@
 import Koa from 'koa';
 
-import {sessionStorage} from '../lib/session-storage';
+import {sessionStorage} from '../core/session-storage';
 import {config} from '../config';
 
 export const authentication = async (ctx: Koa.Context, next: Function) => {
@@ -8,7 +8,7 @@ export const authentication = async (ctx: Koa.Context, next: Function) => {
         return next();
     }
 
-    const authKey = ctx.cookies.get('auth');
+    const authKey = ctx.cookies.get(config.auth.cookieKey);
 
     if (!authKey) {
         ctx.throw(401);
@@ -18,7 +18,7 @@ export const authentication = async (ctx: Koa.Context, next: Function) => {
     const data = await sessionStorage.getSession(authKey);
 
     if (!data) {
-        ctx.cookies.set(config.auth.cookieKey, '', {expires: new Date()});
+        ctx.cookies.set(config.auth.cookieKey, '', {expires: new Date(), overwrite: true});
         ctx.throw(401);
         return;
     }

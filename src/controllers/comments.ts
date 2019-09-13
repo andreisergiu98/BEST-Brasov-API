@@ -1,7 +1,7 @@
 import Koa from 'koa';
 
-import {Controller} from '../lib/controller';
-import {db} from '../lib/db';
+import {Controller} from '../core/controller';
+import {db} from '../core/db';
 
 import {Comment} from '../models/comment';
 

@@ -1,9 +1,9 @@
 import Koa from 'koa';
 
 import {config} from '../config';
-import {Controller} from '../lib/controller';
-import {sessionStorage} from '../lib/session-storage';
-import {db} from '../lib/db';
+import {Controller} from '../core/controller';
+import {sessionStorage} from '../core/session-storage';
+import {db} from '../core/db';
 
 import {User} from '../models/user';
 

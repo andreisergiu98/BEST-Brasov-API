@@ -1,6 +1,6 @@
 import Router from '@koa/router';
 
-import {RBAC} from '../lib/rbac';
+import {RBAC} from '../core/rbac';
 import {authentication} from '../middlewares/authentication';
 
 import {UsersController} from '../controllers/users';

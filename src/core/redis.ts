@@ -26,13 +26,6 @@ export class RedisClient {
         });
     }
 
-    async unlink(keys: string[]): Promise<undefined> {
-        // TODO pull request or issue to DefinitelyTyped
-        // tslint:disable-next-line:ban-ts-ignore
-        // @ts-ignore
-        return this.client.unlink(keys);
-    }
-
     async scanStream(options: ScanStreamOption): Promise<string[]> {
         return new Promise((resolve, reject) => {
             const keys: string[] = [];

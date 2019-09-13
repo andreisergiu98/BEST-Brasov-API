@@ -5,8 +5,8 @@ import bodyparser from 'koa-bodyparser';
 
 import {catchError, logError} from './middlewares/error';
 
-import {db} from './lib/db';
-import {sessionStorage} from './lib/session-storage';
+import {db} from './core/db';
+import {sessionStorage} from './core/session-storage';
 
 import {config} from './config';
 import {routes} from './routes';
