@@ -1,6 +1,6 @@
 import Koa from 'koa';
 
-export const catchError = async (ctx: Koa.Context, next: Function) => {
+export async function catchError(ctx: Koa.Context, next: Function) {
     try {
         await next();
     } catch (e) {
@@ -12,8 +12,8 @@ export const catchError = async (ctx: Koa.Context, next: Function) => {
             ctx.app.emit('error', e, ctx);
         }
     }
-};
+}
 
-export const logError = (e: Error) => {
+export async function logError(e: Error) {
     console.log(e.message);
-};
+}

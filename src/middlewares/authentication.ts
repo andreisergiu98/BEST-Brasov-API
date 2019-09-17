@@ -4,7 +4,7 @@ import {sessionStorage} from '../core/session-storage';
 import {config} from '../config';
 import {time} from '../utils/time';
 
-export const authentication = async (ctx: Koa.Context, next: Function) => {
+export async function authentication(ctx: Koa.Context, next: Function) {
     if (ctx.method === 'POST' && ctx.url === '/authentication') {
         return next();
     }
@@ -32,5 +32,5 @@ export const authentication = async (ctx: Koa.Context, next: Function) => {
     }
 
     ctx.state.user = data;
-    await next();
-};
+    return next();
+}
