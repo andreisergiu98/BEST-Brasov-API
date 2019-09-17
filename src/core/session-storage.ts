@@ -16,7 +16,7 @@ interface SessionData {
 }
 
 class SessionStorage extends RedisClient {
-    private separator = '-';
+    separator = '-';
 
     async getSession(key: string): Promise<SessionData | undefined> {
         const res = await this.client.get(key);
@@ -36,7 +36,7 @@ class SessionStorage extends RedisClient {
     }
 
     async updateData(userId: number, user: User) {
-        const keys = await this.scanStream({match: userId + this.separator + '*'});
+        const keys = await this.scanStream({match: userId + this.separator + '*', count: 100});
 
         let promises = [];
         for (const key of keys) {
@@ -65,7 +65,7 @@ class SessionStorage extends RedisClient {
     }
 
     async deleteAllSessions(userId: number) {
-        const keys = await this.scanStream({match: userId + this.separator + '*'});
+        const keys = await this.scanStream({match: userId + this.separator + '*', count: 100});
         if (keys.length === 0) return;
         // TODO Pull request for DefinitelyTyped approved, delete @ts-ignore after merge.
         // tslint:disable-next-line:ban-ts-ignore

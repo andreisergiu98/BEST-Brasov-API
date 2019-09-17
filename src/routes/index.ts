@@ -18,9 +18,11 @@ const comments = new CommentsController();
 // middlewares
 router.use(authentication);
 
-// authentication
-router.get('/authentication', users.authenticate);
-router.post('/authentication', users.login);
+// Authentication
+router.get('/authentication', users.verifySession);
+router.post('/authentication', users.createSession);
+router.del('/authentication', users.deleteAllSessions);
+router.del('/authentication/:key', users.deleteSession);
 
 // User requests
 router.get('/users', users.getAll);

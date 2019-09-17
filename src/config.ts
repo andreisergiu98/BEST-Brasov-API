@@ -2,6 +2,8 @@ import cors from '@koa/cors';
 import cookies from 'cookies';
 import typeorm from 'typeorm';
 
+import {time} from './utils/time';
+
 const isProduction: boolean = process.env.NODE_ENV === 'production';
 
 export const config = {
@@ -12,12 +14,12 @@ export const config = {
     } as cors.Options,
     auth: {
         cookieKey: 'auth',
-        maxAge: 7 * 24 * 60 * 60 * 1000,
+        maxAge: time.daysToMilliseconds(7),
         cookieOptions: {
             secure: isProduction,
             httpOnly: true,
             overwrite: true,
-            maxAge: 7 * 24 * 60 * 60 * 1000,
+            maxAge: time.daysToMilliseconds(7),
         } as cookies.SetOption,
     },
     postgres: {

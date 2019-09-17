@@ -2,6 +2,7 @@ import Koa from 'koa';
 
 import {sessionStorage} from '../core/session-storage';
 import {config} from '../config';
+import {time} from '../utils/time';
 
 export const authentication = async (ctx: Koa.Context, next: Function) => {
     if (ctx.method === 'POST' && ctx.url === '/authentication') {
@@ -23,10 +24,11 @@ export const authentication = async (ctx: Koa.Context, next: Function) => {
         return;
     }
 
-    const remainingDays = (data.expires - Date.now()) / (1000 * 60 * 60 * 24);
+    const remainingDays = (data.expires - Date.now()) / time.daysToMilliseconds(1);
     if (remainingDays < 1) {
         await sessionStorage.extendSession(authKey, data);
         ctx.cookies.set(config.auth.cookieKey, authKey, config.auth.cookieOptions);
+        data.expires = Date.now() + config.auth.maxAge;
     }
 
     ctx.state.user = data;

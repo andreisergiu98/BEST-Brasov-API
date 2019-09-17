@@ -45,7 +45,7 @@ export class UsersController extends Controller {
         ctx.status = 200;
     }
 
-    async login(ctx: Koa.Context) {
+    async createSession(ctx: Koa.Context) {
         const data = ctx.request.body as { email?: string };
 
         if (!data.email) {
@@ -65,8 +65,25 @@ export class UsersController extends Controller {
         ctx.status = 204;
     }
 
-    async authenticate(ctx: Koa.Context) {
+    async verifySession(ctx: Koa.Context) {
         ctx.body = ctx.state.user;
         ctx.status = 200;
+    }
+
+    async deleteSession(ctx: Koa.Context) {
+        const key = ctx.params.key;
+
+        if (!key.startsWith(ctx.state.user.id + sessionStorage.separator)) {
+            ctx.throw(403);
+            return;
+        }
+
+        await sessionStorage.deleteSession(key);
+        ctx.status = 204;
+    }
+
+    async deleteAllSessions(ctx: Koa.Context) {
+        await sessionStorage.deleteAllSessions(ctx.state.user.id);
+        ctx.status = 204;
     }
 }
