@@ -7,14 +7,14 @@ import {Meeting} from '../models/meeting';
 
 export class MeetingsController extends Controller {
     async getAll(ctx: Koa.Context) {
-        const query = this.parseQuery(ctx.query);
+        const dbQuery = this.getDatabaseQuery(ctx.state.query);
         try {
             ctx.body = await db.getManager().find(Meeting, {
-                where: query.conditions,
-                relations: query.populate,
-                select: query.fields,
-                skip: query.offset,
-                take: query.limit,
+                where: dbQuery.conditions,
+                relations: dbQuery.populate,
+                select: dbQuery.fields,
+                skip: dbQuery.offset,
+                take: dbQuery.limit,
             });
         } catch (e) {
             ctx.throw(400, e.message);

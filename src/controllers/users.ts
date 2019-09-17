@@ -9,14 +9,14 @@ import {User} from '../models/user';
 
 export class UsersController extends Controller {
     async getAll(ctx: Koa.Context) {
-        const query = this.parseQuery(ctx.query);
+        const dbQuery = this.getDatabaseQuery(ctx.state.query);
         try {
             ctx.body = await db.getManager().find(User, {
-                where: query.conditions,
-                relations: query.populate,
-                select: query.fields,
-                skip: query.offset,
-                take: query.limit,
+                where: dbQuery.conditions,
+                relations: dbQuery.populate,
+                select: dbQuery.fields,
+                skip: dbQuery.offset,
+                take: dbQuery.limit,
             });
         } catch (e) {
             ctx.throw(400, e.message);
@@ -25,13 +25,13 @@ export class UsersController extends Controller {
     }
 
     async getById(ctx: Koa.Context) {
-        const query = this.parseQuery(ctx.query);
+        const dbQuery = this.getDatabaseQuery(ctx.state.query);
         let user;
         try {
             user = await db.getManager().findOne(User, {
                 where: {id: ctx.params.id},
-                relations: query.populate,
-                select: query.fields,
+                relations: dbQuery.populate,
+                select: dbQuery.fields,
             });
         } catch (e) {
             ctx.throw(400, e.message);

@@ -7,6 +7,7 @@ import {UsersController} from '../controllers/users';
 import {EntitiesController} from '../controllers/entities';
 import {MeetingsController} from '../controllers/meetings';
 import {CommentsController} from '../controllers/comments';
+import {queryParser} from '../middlewares/query-parser';
 
 const router = new Router();
 
@@ -17,6 +18,7 @@ const comments = new CommentsController();
 
 // middlewares
 router.use(authentication);
+router.use(queryParser());
 
 // Authentication
 router.get('/authentication', users.verifySession);
