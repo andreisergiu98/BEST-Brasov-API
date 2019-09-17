@@ -1,5 +1,8 @@
 {
   "verbose": true,
+  "watch": ["src"],
+  "exec": "ts-node src/index.ts",
+  "ext": "ts",
   "env": {
     "NODE_ENV": "development",
     "PORT": 8081,

@@ -14,7 +14,7 @@ services:
       - ./nodemon.json:/home/node/app/nodemon.json
       - ./node_modules:/home/node/app/node_modules
       - ./development:/home/node/app/development
-    command: yarn dev:start
+    command: yarn run nodemon
 
   db:
     container_name: BEST_api_postgres
