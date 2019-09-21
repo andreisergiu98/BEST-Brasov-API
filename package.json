@@ -1,11 +1,14 @@
 {
   "name": "bestbrasov-api",
   "version": "0.0.1",
-  "main": "index.js",
-  "license": "GPL-3.0-or-later",
+  "license": "AGPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:andreisergiu98/BEST-Brasov-API.git"
+  },
   "scripts": {
     "build": "tsc",
-    "start": "docker-compose down && docker-compose up -d && docker logs BEST_api_node --follow"
+    "start": "docker-compose up -d && docker logs BEST_api_node --follow"
   },
   "dependencies": {
     "@koa/cors": "^3.0.0",
