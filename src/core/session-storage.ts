@@ -61,15 +61,12 @@ class SessionStorage extends RedisClient {
     }
 
     async deleteSession(key: string) {
-        return this.client.del(key);
+        return this.client.unlink(key);
     }
 
     async deleteAllSessions(userId: number) {
         const keys = await this.scanStream({match: userId + this.separator + '*', count: 100});
         if (keys.length === 0) return;
-        // TODO Pull request for DefinitelyTyped approved, delete @ts-ignore after merge.
-        // tslint:disable-next-line:ban-ts-ignore
-        // @ts-ignore
         return this.client.unlink(...keys);
     }
 
