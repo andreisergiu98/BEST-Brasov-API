@@ -8,7 +8,7 @@ import {Entity} from '../models/entity';
 
 export class EntitiesController extends Controller {
     async getAll(ctx: Koa.Context) {
-        const dbQuery = this.getDatabaseQuery(ctx.state.query);
+        const dbQuery = this.getDatabaseQuery(ctx.query);
         try {
             ctx.body = await db.getManager().find(Entity, {
                 where: dbQuery.conditions,
@@ -24,7 +24,7 @@ export class EntitiesController extends Controller {
     }
 
     async getById(ctx: Koa.Context) {
-        const dbQuery = this.getDatabaseQuery(ctx.state.query);
+        const dbQuery = this.getDatabaseQuery(ctx.query);
         let entity;
         try {
             entity = await db.getManager().findOne(Entity, {
@@ -45,7 +45,7 @@ export class EntitiesController extends Controller {
     }
 
     async getCategories(ctx: Koa.Context) {
-        const dbQuery = this.getDatabaseQuery(ctx.state.query);
+        const dbQuery = this.getDatabaseQuery(ctx.query);
         try {
             ctx.body = await db.getManager().find(EntityCategory, {
                 where: dbQuery.conditions,

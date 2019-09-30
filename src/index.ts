@@ -8,6 +8,8 @@ import {catchError, logError} from './middlewares/error';
 import {db} from './core/db';
 import {sessionStorage} from './core/session-storage';
 
+import {patchQs} from './utils/qs';
+
 import {config} from './config';
 import {routes} from './routes';
 
@@ -16,6 +18,7 @@ class App {
 
     constructor() {
         this.app = new Koa();
+        patchQs(this.app);
     }
 
     private async initAsync() {

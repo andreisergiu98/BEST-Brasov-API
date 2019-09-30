@@ -9,7 +9,7 @@ import {User} from '../models/user';
 
 export class UsersController extends Controller {
     async getAll(ctx: Koa.Context) {
-        const dbQuery = this.getDatabaseQuery(ctx.state.query);
+        const dbQuery = this.getDatabaseQuery(ctx.query);
         try {
             ctx.body = await db.getManager().find(User, {
                 where: dbQuery.conditions,
@@ -25,7 +25,7 @@ export class UsersController extends Controller {
     }
 
     async getById(ctx: Koa.Context) {
-        const dbQuery = this.getDatabaseQuery(ctx.state.query);
+        const dbQuery = this.getDatabaseQuery(ctx.query);
         let user;
         try {
             user = await db.getManager().findOne(User, {
