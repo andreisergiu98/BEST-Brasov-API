@@ -49,5 +49,4 @@ class App {
     }
 }
 
-const app = new App();
-app.init();
+new App().init();
