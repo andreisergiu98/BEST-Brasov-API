@@ -33,7 +33,7 @@ export class Entity {
     phoneNumbers!: [{ phone: string, info: string }];
 
     @Column({type: 'json', default: [], nullable: true})
-    emailAddress!: [{ email: string, info: string }];
+    emailAddresses!: [{ email: string, info: string }];
 
     @ManyToMany(() => EntityCategory, category => category.entities, {
         eager: true,
@@ -54,7 +54,7 @@ export class Entity {
             this.website = entity.website;
             this.numberOfCalls = entity.numberOfCalls;
             this.phoneNumbers = entity.phoneNumbers;
-            this.emailAddress = entity.emailAddress;
+            this.emailAddresses = entity.emailAddresses;
             this.categories = entity.categories;
         }
     }
