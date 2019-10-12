@@ -11,11 +11,11 @@ class Db {
         console.log(`Connected to ${this.connectionName}!\n`);
     }
 
-    getConnection() {
+    get connection() {
         return getConnection(this.connectionName);
     }
 
-    getManager() {
+    get manager() {
         return getConnection(this.connectionName).manager;
     }
 }

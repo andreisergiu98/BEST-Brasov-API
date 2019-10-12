@@ -11,7 +11,7 @@ export class UsersController extends Controller {
     async getAll(ctx: Koa.Context) {
         const dbQuery = this.getDatabaseQuery(ctx.query);
         try {
-            ctx.body = await db.getManager().find(User, {
+            ctx.body = await db.manager.find(User, {
                 where: dbQuery.conditions,
                 relations: dbQuery.populate,
                 select: dbQuery.fields,
@@ -28,7 +28,7 @@ export class UsersController extends Controller {
         const dbQuery = this.getDatabaseQuery(ctx.query);
         let user;
         try {
-            user = await db.getManager().findOne(User, {
+            user = await db.manager.findOne(User, {
                 where: {id: ctx.params.id},
                 relations: dbQuery.populate,
                 select: dbQuery.fields,
@@ -53,7 +53,7 @@ export class UsersController extends Controller {
             return;
         }
 
-        const user = await db.getManager().findOne(User, {where: {email: data.email}});
+        const user = await db.manager.findOne(User, {where: {email: data.email}});
 
         if (!user) {
             ctx.throw(403);

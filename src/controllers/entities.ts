@@ -10,7 +10,7 @@ export class EntitiesController extends Controller {
     async getAll(ctx: Koa.Context) {
         const dbQuery = this.getDatabaseQuery(ctx.query);
         try {
-            ctx.body = await db.getManager().find(Entity, {
+            ctx.body = await db.manager.find(Entity, {
                 where: dbQuery.conditions,
                 relations: dbQuery.populate,
                 select: dbQuery.fields,
@@ -27,7 +27,7 @@ export class EntitiesController extends Controller {
         const dbQuery = this.getDatabaseQuery(ctx.query);
         let entity;
         try {
-            entity = await db.getManager().findOne(Entity, {
+            entity = await db.manager.findOne(Entity, {
                 where: {id: ctx.params.id},
                 relations: dbQuery.populate,
                 select: dbQuery.fields,
@@ -47,7 +47,7 @@ export class EntitiesController extends Controller {
     async getCategories(ctx: Koa.Context) {
         const dbQuery = this.getDatabaseQuery(ctx.query);
         try {
-            ctx.body = await db.getManager().find(EntityCategory, {
+            ctx.body = await db.manager.find(EntityCategory, {
                 where: dbQuery.conditions,
                 relations: dbQuery.populate,
                 select: dbQuery.fields,
@@ -70,7 +70,7 @@ export class EntitiesController extends Controller {
 
         try {
             data.id = NaN;
-            ctx.body = await db.getManager().save(new Entity(data));
+            ctx.body = await db.manager.save(new Entity(data));
         } catch (e) {
             ctx.throw(400, e.message);
         }
@@ -85,11 +85,11 @@ export class EntitiesController extends Controller {
             return;
         }
 
-        if (await db.getManager().count(Entity, {id: data.id}) === 0) {
+        if (await db.manager.count(Entity, {id: data.id}) === 0) {
             ctx.throw(404);
         }
         try {
-            ctx.body = await db.getManager().save(new Entity(data));
+            ctx.body = await db.manager.save(new Entity(data));
         } catch (e) {
             ctx.throw(400, e.message);
         }

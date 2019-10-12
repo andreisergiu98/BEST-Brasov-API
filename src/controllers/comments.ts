@@ -25,7 +25,7 @@ export class CommentsController extends Controller {
         const comment = new Comment(data);
         comment.user = user;
 
-        await db.getManager().save(comment);
+        await db.manager.save(comment);
 
         ctx.body = comment;
         ctx.status = 200;
