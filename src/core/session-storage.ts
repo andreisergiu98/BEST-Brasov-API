@@ -1,10 +1,13 @@
-import uuid from 'uuid/v4';
+import crypto from 'crypto';
+import util from 'util';
 
 import {config} from '../config';
 import {RedisClient} from './redis';
 import {User} from '../models/user';
 
 import {Device, device} from '../utils/device';
+
+const randomBytes = util.promisify(crypto.randomBytes);
 
 interface SessionData {
     id: number;
@@ -29,7 +32,8 @@ class SessionStorage extends RedisClient {
     }
 
     async createSession(userId: number, user: User, useragent: string, exp = config.auth.maxAge) {
-        const session = userId + this.separator + uuid();
+        const token = (await randomBytes(48)).toString('base64');
+        const session = userId + this.separator + token;
         const sessionData = SessionStorage.buildData(user, useragent, Date.now() + exp);
         await this.client.set(session, JSON.stringify(sessionData), 'PX', exp);
         return session;
