@@ -16,7 +16,7 @@ export class RBAC {
         return false;
     }
 
-    static getRoleById(roleId: string): Role | undefined {
+    static getRoleBy(roleId: string): Role | undefined {
         for (const [key, value] of Object.entries(RBAC.roles)) {
             if (value.id === roleId) {
                 return value;
@@ -26,7 +26,7 @@ export class RBAC {
 
     static restrictAccess(role: Role) {
         return async (ctx: Koa.Context, next: Function) => {
-            const userRole = this.getRoleById(ctx.state.user.role);
+            const userRole = this.getRoleBy(ctx.state.user.role);
 
             if (!userRole) {
                 throw Error(`Role: ${ctx.state.user.role} of user: ${ctx.state.user.id}, ${ctx.state.user.name} does not exist!`);
