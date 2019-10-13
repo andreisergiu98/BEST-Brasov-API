@@ -1,4 +1,5 @@
 import Koa from 'koa';
+import {config} from '../config';
 
 export async function catchError(ctx: Koa.Context, next: Function) {
     try {
@@ -9,8 +10,11 @@ export async function catchError(ctx: Koa.Context, next: Function) {
 
         if (ctx.status === 500) {
             ctx.body = 'Internal Server Error';
-            ctx.app.emit('error', e, ctx);
+        } else if (config.isProduction) {
+            return;
         }
+
+        ctx.app.emit('error', e, ctx);
     }
 }
 
