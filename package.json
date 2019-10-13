@@ -2,10 +2,8 @@
   "name": "bestbrasov-api",
   "version": "0.0.1",
   "license": "AGPL-3.0-or-later",
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:andreisergiu98/BEST-Brasov-API.git"
-  },
+  "author": "Andrei Pampu <pampu.s.andrei@gmail.com>",
+  "repository": "git@github.com:andreisergiu98/BEST-Brasov-API.git",
   "scripts": {
     "build": "tsc",
     "start": "docker-compose up -d && docker logs BEST_api_node --follow"
