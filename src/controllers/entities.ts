@@ -69,7 +69,7 @@ export class EntitiesController extends Controller {
         }
 
         try {
-            data.id = NaN;
+            data.id = null as unknown as number;
             ctx.body = await db.manager.save(new Entity(data));
         } catch (e) {
             ctx.throw(400, e.message);
