@@ -20,7 +20,7 @@ export class Meeting {
     facilitatorId!: number;
 
     @OneToOne(() => User)
-    @JoinColumn({name: 'facilitatorId'})
+    @JoinColumn({name: 'facilitator_id'})
     facilitator?: User;
 
     @OneToMany(() => MeetingParticipant, participant => participant.meeting)

@@ -7,10 +7,10 @@ export class Comment {
     @PrimaryGeneratedColumn()
     id?: number;
 
-    @Column({type: 'integer'})
+    @Column('integer')
     userId!: number;
 
-    @Column({type: 'integer', nullable: true},)
+    @Column({nullable: true},)
     entityId?: number;
 
     @Column({type: 'text'})
@@ -20,14 +20,14 @@ export class Comment {
     date!: Date;
 
     @ManyToOne(() => User)
-    @JoinColumn({name: 'userId'})
+    @JoinColumn({name: 'user_id'})
     user?: User;
 
     @ManyToOne(() => Entity, entity => entity.comments, {
         nullable: true,
         onDelete: 'CASCADE',
     })
-    @JoinColumn({name: 'entityId'})
+    @JoinColumn({name: 'entity_id'})
     entity?: Entity;
 
     constructor(comment?: Comment) {

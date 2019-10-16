@@ -7,22 +7,22 @@ export class MeetingParticipant {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({type: 'integer'})
+    @Column('integer')
     userId!: number;
 
-    @Column({type: 'integer'})
+    @Column('integer')
     meetingId!: number;
 
     @Column({type: 'boolean', default: false})
     confirmed!: boolean;
 
     @OneToOne(() => User)
-    @JoinColumn({name: 'userId'})
+    @JoinColumn({name: 'user_id'})
     user?: User;
 
     @ManyToOne(() => Meeting, {
         onDelete: 'CASCADE',
     })
-    @JoinColumn({name: 'meetingId'})
+    @JoinColumn({name: 'meeting_id'})
     meeting?: Meeting;
 }
