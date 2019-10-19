@@ -60,7 +60,7 @@ export class UsersController extends Controller {
             return;
         }
 
-        const authKey = await sessionStorage.createSession(user.id, user, ctx.headers['user-agent']);
+        const authKey = await sessionStorage.createSession(user, ctx.headers['user-agent']);
         ctx.cookies.set(config.auth.cookieKey, authKey, config.auth.cookieOptions);
         ctx.status = 204;
     }
@@ -71,19 +71,12 @@ export class UsersController extends Controller {
     }
 
     async deleteSession(ctx: Koa.Context) {
-        const key = ctx.params.key;
-
-        if (!key.startsWith(ctx.state.user.id + sessionStorage.separator)) {
-            ctx.throw(403);
-            return;
-        }
-
-        await sessionStorage.deleteSession(key);
+        // TODO
         ctx.status = 204;
     }
 
     async deleteAllSessions(ctx: Koa.Context) {
-        await sessionStorage.deleteAllSessions(ctx.state.user.id);
+        // TODO
         ctx.status = 204;
     }
 }

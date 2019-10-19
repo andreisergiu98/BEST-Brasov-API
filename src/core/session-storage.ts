@@ -1,3 +1,4 @@
+import {Redis} from 'ioredis';
 import crypto from 'crypto';
 import util from 'util';
 
@@ -5,87 +6,106 @@ import {config} from '../config';
 import {RedisClient} from './redis';
 import {User} from '../models/user';
 
-import {Device, device} from '../utils/device';
-
 const randomBytes = util.promisify(crypto.randomBytes);
 
-interface SessionData {
+interface SessionRedis extends Redis {
+    getUser: (key: string) => Promise<string | undefined>;
+}
+
+export interface SessionData {
     id: number;
-    name: string;
     role: string;
-    photo?: string;
-    device: Device;
-    expires: number;
+    pttl: number;
 }
 
 class SessionStorage extends RedisClient {
-    separator = '-';
+    readonly separator = '#';
 
-    async getSession(key: string): Promise<SessionData | undefined> {
-        const res = await this.client.get(key);
-        return res ? JSON.parse(res) : undefined;
+    private readonly exp = config.auth.maxAge;
+    private readonly tokenSize = config.auth.tokenSize;
+    private readonly sessionNamespace = 'session:';
+    private readonly userNamespace = 'user:';
+
+    client!: SessionRedis;
+
+    async onConnected() {
+        this.client.defineCommand('getUser', {
+            numberOfKeys: 1,
+            // language=Lua
+            lua: `
+                local id = redis.call('get', KEYS[1])
+                if id == false then return false end
+                local ttl = redis.call('pttl', KEYS[1])
+                return { redis.call('hmget', 'user:' .. id, 'id', 'role'), ttl }
+            `,
+        });
     }
 
-    async getSessionWithKey(key: string): Promise<{ key: string, data: SessionData | undefined }> {
-        const data = await this.getSession(key);
-        return {key, data};
+    async getSession(sessionId: string): Promise<SessionData | undefined> {
+        const key = this.getSessionKey(sessionId);
+        const res = await this.client.getUser(key);
+
+        if (!res) return;
+        const [[id, role], ttl] = res;
+
+        if (!id || !role) return;
+
+        return {
+            id: Number(id),
+            pttl: Number(ttl),
+            role,
+        };
     }
 
-    async createSession(userId: number, user: User, useragent: string, exp = config.auth.maxAge) {
-        const token = (await randomBytes(48)).toString('base64');
-        const session = userId + this.separator + token;
-        const sessionData = SessionStorage.buildData(user, useragent, Date.now() + exp);
-        await this.client.set(session, JSON.stringify(sessionData), 'PX', exp);
-        return session;
+    async createSession(user: User, useragent: string) {
+        const sessionId = (await randomBytes(this.tokenSize)).toString('base64');
+
+        const data = this.buildData(user);
+        const userKey = this.getUserKey(user.id);
+        const sessionKey = this.getSessionKey(sessionId);
+
+        await this.client.hmset(userKey, data);
+        await this.client.pexpire(userKey, this.exp);
+        await this.client.set(sessionKey, user.id, 'px', this.exp);
+
+        return sessionId;
     }
 
-    async updateData(userId: number, user: User) {
-        const keys = await this.scanStream({match: userId + this.separator + '*', count: 100});
-
-        let promises = [];
-        for (const key of keys) {
-            promises.push(this.getSessionWithKey(key));
-        }
-        const sessions = await Promise.all(promises);
-
-        promises = [];
-        for (const session of sessions) {
-            if (!session.data) continue;
-            const ttl = session.data.expires - Date.now();
-            const sessionData = SessionStorage.buildData(user, session.data.device, session.data.expires);
-            promises.push(this.client.set(session.key, JSON.stringify(sessionData), 'PX', ttl));
-        }
-
+    async extendSession(sessionId: string, userId: number) {
+        const promises = [];
+        promises.push(this.client.pexpire(this.getSessionKey(sessionId), this.exp));
+        promises.push(this.client.pexpire(this.getUserKey(userId), this.exp));
         return Promise.all(promises);
     }
 
-    async extendSession(session: string, data: SessionData, exp = config.auth.maxAge) {
-        data.expires = Date.now() + exp;
-        return this.client.set(session, JSON.stringify(data), 'PX', exp);
+    async updateData(user: User) {
+        const key = this.getUserKey(user.id);
+        const data = this.buildData(user);
+        await this.client.hmset(key, data);
+        await this.client.pexpire(key, this.exp);
     }
 
-    async deleteSession(key: string) {
-        return this.client.unlink(key);
+    async deleteSession(sessionId: string) {
+        return this.client.unlink(this.getSessionKey(sessionId));
     }
 
-    async deleteAllSessions(userId: number) {
-        const keys = await this.scanStream({match: userId + this.separator + '*', count: 100});
-        if (keys.length === 0) return;
+    async deleteAllSessions(sessionIds: string[]) {
+        const keys = sessionIds.map(id => this.getSessionKey(id));
         return this.client.unlink(...keys);
     }
 
-    private static buildData(user: User, deviceInfo: Device | string, expires?: number) {
-        if (typeof deviceInfo === 'string') {
-            deviceInfo = device.getInfo(deviceInfo);
-        }
+    private getUserKey(userId: number | string) {
+        return this.userNamespace + userId;
+    }
 
+    private getSessionKey(sessionId: string) {
+        return this.sessionNamespace + sessionId;
+    }
+
+    private buildData(user: User) {
         return {
             id: user.id,
-            name: user.name,
             role: user.role,
-            photo: user.photo,
-            device: deviceInfo,
-            expires,
         };
     }
 }

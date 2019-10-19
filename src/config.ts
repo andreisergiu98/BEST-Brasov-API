@@ -15,6 +15,7 @@ export const config = {
     } as cors.Options,
     auth: {
         cookieKey: 'auth',
+        tokenSize: 24,
         maxAge: time.daysToMilliseconds(7),
         cookieOptions: {
             secure: isProduction,

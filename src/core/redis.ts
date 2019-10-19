@@ -19,11 +19,15 @@ export class RedisClient {
                 reject(e);
             });
 
-            this.client.on('ready', () => {
+            this.client.on('ready', async () => {
                 console.log(`Connected to redis:${this.db}!\n`);
+                await this.onConnected();
                 resolve();
             });
         });
+    }
+
+    protected async onConnected() {
     }
 
     async scanStream(options: ScanStreamOption): Promise<string[]> {
