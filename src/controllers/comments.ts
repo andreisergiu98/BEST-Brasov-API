@@ -16,6 +16,7 @@ function tagUser(ctx: Koa.Context, next: Function) {
         ctx.request.body.userId = ctx.state.user.id;
         ctx.request.body.date = new Date();
     }
+    return next();
 }
 
 const commentsOptions: ControllerOptions = {

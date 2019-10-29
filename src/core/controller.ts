@@ -37,7 +37,9 @@ export class Controller<T> {
     private readonly router = Router();
     // tslint:disable-next-line:variable-name
     private readonly Resource: new (x?: T) => T;
+    private readonly options: ControllerOptions;
     private readonly excludedFields: string[] = [];
+    private routesCreated = false;
 
     // private readonly options: ControllerOptions;
 
@@ -47,9 +49,7 @@ export class Controller<T> {
         if (options.read && options.read.excludeFields) {
             this.excludedFields = options.read.excludeFields;
         }
-
-        this.createRouter(options);
-        this.extendRouter(this.router);
+        this.options = options;
     }
 
     private createRouter = (options: ControllerOptions) => {
@@ -104,6 +104,11 @@ export class Controller<T> {
     };
 
     get routes() {
+        if (!this.routesCreated) {
+            this.createRouter(this.options);
+            this.extendRouter(this.router);
+            this.routesCreated = true;
+        }
         return this.router.routes();
     }
 
