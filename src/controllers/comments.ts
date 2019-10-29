@@ -1,33 +1,31 @@
 import Koa from 'koa';
 
-import {Controller} from '../core/controller';
-import {db} from '../core/db';
+import {RBAC} from '../core/rbac';
+import {Controller, ControllerOptions} from '../core/controller';
 
 import {Comment} from '../models/comment';
 
-export class CommentsController extends Controller {
-    async create(ctx: Koa.Context) {
-        const data = ctx.request.body as Comment | undefined;
-        const user = ctx.state.user;
-
-        if (!data) {
-            ctx.throw(400);
-            return;
-        }
-
-        if (!data.entityId) {
-            ctx.throw(400);
-        }
-
-        data.userId = user.id;
-        data.date = new Date();
-
-        const comment = new Comment(data);
-        comment.user = user;
-
-        await db.manager.save(comment);
-
-        ctx.body = comment;
-        ctx.status = 200;
+export class CommentsController extends Controller<Comment> {
+    constructor() {
+        super(Comment, commentsOptions);
     }
 }
+
+function tagUser(ctx: Koa.Context, next: Function) {
+    if (ctx.request.body) {
+        ctx.request.body.userId = ctx.state.user.id;
+        ctx.request.body.date = new Date();
+    }
+}
+
+const commentsOptions: ControllerOptions = {
+    create: {
+        pre: tagUser,
+    },
+    update: {
+        disabled: true,
+    },
+    delete: {
+        access: RBAC.roles.admin,
+    },
+};

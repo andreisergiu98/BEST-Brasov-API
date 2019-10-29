@@ -1,24 +1,22 @@
-import Koa from 'koa';
-
-import {Controller} from '../core/controller';
-import {db} from '../core/db';
+import {RBAC} from '../core/rbac';
+import {Controller, ControllerOptions} from '../core/controller';
 
 import {Meeting} from '../models/meeting';
 
-export class MeetingsController extends Controller {
-    async getAll(ctx: Koa.Context) {
-        const dbQuery = this.getDatabaseQuery(ctx.query);
-        try {
-            ctx.body = await db.manager.find(Meeting, {
-                where: dbQuery.conditions,
-                relations: dbQuery.populate,
-                select: dbQuery.fields,
-                skip: dbQuery.offset,
-                take: dbQuery.limit,
-            });
-        } catch (e) {
-            ctx.throw(400, e.message);
-        }
-        ctx.status = 200;
+export class MeetingsController extends Controller<Meeting> {
+    constructor() {
+        super(Meeting, meetingOptions);
     }
 }
+
+const meetingOptions: ControllerOptions = {
+    create: {
+        access: RBAC.roles.moderator,
+    },
+    update: {
+        access: RBAC.roles.moderator,
+    },
+    delete: {
+        access: RBAC.roles.admin,
+    },
+};

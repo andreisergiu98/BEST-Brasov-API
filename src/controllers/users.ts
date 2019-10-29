@@ -1,51 +1,26 @@
 import Koa from 'koa';
 
 import {config} from '../config';
+
+import {db} from '../core/db';
 import {Controller} from '../core/controller';
 import {sessionStorage} from '../core/session-storage';
-import {db} from '../core/db';
 
 import {User} from '../models/user';
 
-export class UsersController extends Controller {
-    async getAll(ctx: Koa.Context) {
-        const dbQuery = this.getDatabaseQuery(ctx.query);
-        try {
-            ctx.body = await db.manager.find(User, {
-                where: dbQuery.conditions,
-                relations: dbQuery.populate,
-                select: dbQuery.fields,
-                skip: dbQuery.offset,
-                take: dbQuery.limit,
-            });
-        } catch (e) {
-            ctx.throw(400, e.message);
-        }
-        ctx.status = 200;
+export class UsersController extends Controller<User> {
+    constructor() {
+        super(User);
+        this.router.get('/authentication', this.verifySession);
+        this.router.post('/authentication', this.createSession);
     }
 
-    async getById(ctx: Koa.Context) {
-        const dbQuery = this.getDatabaseQuery(ctx.query);
-        let user;
-        try {
-            user = await db.manager.findOne(User, {
-                where: {id: ctx.params.id},
-                relations: dbQuery.populate,
-                select: dbQuery.fields,
-            });
-        } catch (e) {
-            ctx.throw(400, e.message);
-        }
-
-        if (!user) {
-            ctx.throw(404);
-        }
-
-        ctx.body = user;
+    private verifySession = async (ctx: Koa.Context) => {
+        ctx.body = ctx.state.user;
         ctx.status = 200;
-    }
+    };
 
-    async createSession(ctx: Koa.Context) {
+    private createSession = async (ctx: Koa.Context) => {
         const data = ctx.request.body as { email?: string };
 
         if (!data.email) {
@@ -63,20 +38,15 @@ export class UsersController extends Controller {
         const authKey = await sessionStorage.createSession(user, ctx.headers['user-agent']);
         ctx.cookies.set(config.auth.cookieKey, authKey, config.auth.cookieOptions);
         ctx.status = 204;
-    }
+    };
 
-    async verifySession(ctx: Koa.Context) {
-        ctx.body = ctx.state.user;
-        ctx.status = 200;
-    }
-
-    async deleteSession(ctx: Koa.Context) {
+    private deleteSession = async (ctx: Koa.Context) => {
         // TODO
         ctx.status = 204;
-    }
+    };
 
-    async deleteAllSessions(ctx: Koa.Context) {
+    private deleteAllSessions = async (ctx: Koa.Context) => {
         // TODO
         ctx.status = 204;
-    }
+    };
 }
