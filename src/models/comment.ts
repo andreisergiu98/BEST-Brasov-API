@@ -1,9 +1,9 @@
-import {Column, Entity as TypeormEntity, JoinColumn, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {BaseEntity, Column, Entity as TypeormEntity, JoinColumn, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {User} from './user';
 import {Entity} from './entity';
 
 @TypeormEntity()
-export class Comment {
+export class Comment extends BaseEntity {
     @PrimaryGeneratedColumn()
     id?: number;
 
@@ -13,10 +13,10 @@ export class Comment {
     @Column({nullable: true},)
     entityId?: number;
 
-    @Column({type: 'text'})
+    @Column('text')
     text!: string;
 
-    @Column({type: 'timestamp'})
+    @Column('timestamp')
     date!: Date;
 
     @ManyToOne(() => User)
@@ -31,6 +31,7 @@ export class Comment {
     entity?: Entity;
 
     constructor(comment?: Comment) {
+        super();
         if (comment) {
             this.id = comment.id;
             this.text = comment.text;

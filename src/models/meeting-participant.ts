@@ -1,9 +1,9 @@
-import {Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {Meeting} from './meeting';
 import {User} from './user';
 
 @Entity()
-export class MeetingParticipant {
+export class MeetingParticipant extends BaseEntity {
     @PrimaryGeneratedColumn()
     id!: number;
 
@@ -13,7 +13,7 @@ export class MeetingParticipant {
     @Column('integer')
     meetingId!: number;
 
-    @Column({type: 'boolean', default: false})
+    @Column('boolean', {default: false})
     confirmed!: boolean;
 
     @OneToOne(() => User)

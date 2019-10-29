@@ -4,35 +4,35 @@ import {
     PrimaryGeneratedColumn,
     ManyToMany,
     JoinTable,
-    OneToMany,
+    OneToMany, BaseEntity,
 } from 'typeorm';
 import {EntityCategory} from './entity-category';
 import {Comment} from './comment';
 
 @TypeormEntity()
-export class Entity {
+export class Entity extends BaseEntity {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({type: 'text'})
+    @Column('text')
     name!: string;
 
-    @Column({type: 'text', default: ''})
+    @Column('text', {default: ''})
     city!: string;
 
-    @Column({type: 'text', default: ''})
+    @Column('text', {default: ''})
     address!: string;
 
-    @Column({type: 'text', default: ''})
+    @Column('text', {default: ''})
     website!: string;
 
-    @Column({type: 'integer', default: 0})
+    @Column('integer', {default: 0})
     numberOfCalls!: number;
 
-    @Column({type: 'json', default: [], nullable: true})
+    @Column('json', {default: [], nullable: true})
     phoneNumbers!: [{ phone: string, info: string }];
 
-    @Column({type: 'json', default: [], nullable: true})
+    @Column('json', {default: [], nullable: true})
     emailAddresses!: [{ email: string, info: string }];
 
     @ManyToMany(() => EntityCategory, category => category.entities, {
@@ -46,6 +46,7 @@ export class Entity {
     comments?: Comment[];
 
     constructor(entity?: Entity) {
+        super();
         if (entity) {
             this.id = entity.id;
             this.name = entity.name;

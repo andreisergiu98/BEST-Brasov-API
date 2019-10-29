@@ -1,22 +1,22 @@
-import {Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {BaseEntity, Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {User} from './user';
 import {MeetingParticipant} from './meeting-participant';
 
 @Entity()
-export class Meeting {
+export class Meeting extends BaseEntity {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({type: 'text'})
+    @Column('text')
     name!: string;
 
-    @Column({type: 'date'})
+    @Column('date')
     date?: Date;
 
-    @Column({type: 'text', array: true})
+    @Column('text', {array: true})
     tags!: string[];
 
-    @Column({type: 'integer'})
+    @Column('integer')
     facilitatorId!: number;
 
     @OneToOne(() => User)

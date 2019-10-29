@@ -1,7 +1,7 @@
-import {Entity, Column, PrimaryGeneratedColumn} from 'typeorm';
+import {Entity, Column, PrimaryGeneratedColumn, BaseEntity} from 'typeorm';
 
 @Entity()
-export class User {
+export class User extends BaseEntity {
     @PrimaryGeneratedColumn()
     id!: number;
 
@@ -33,6 +33,7 @@ export class User {
     role!: string;
 
     constructor(user?: User) {
+        super();
         if (user) {
             this.id = user.id;
             this.email = user.email;
