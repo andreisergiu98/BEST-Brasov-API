@@ -2,16 +2,11 @@ function daysToMilliseconds(days: number) {
     return days * 24 * 60 * 60 * 1000;
 }
 
-function secondsToDays(seconds: number) {
-    return seconds / 60 / 60 / 24;
-}
-
-function daysToSeconds(days: number) {
-    return days * 24 * 60 * 60;
+function millisecondsToDays(milli: number) {
+    return milli / 1000 / 60 / 60 / 24;
 }
 
 export const time = {
     daysToMilliseconds,
-    daysToSeconds,
-    secondsToDays,
+    millisecondsToDays,
 };
