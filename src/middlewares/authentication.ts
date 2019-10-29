@@ -5,9 +5,10 @@ import {config} from '../config';
 import {time} from '../utils/time';
 
 export async function authentication(ctx: Koa.Context, next: Function) {
-    if (ctx.method === 'POST' && ctx.url === '/authentication') {
+    if (ctx.method === 'POST' && ctx.url === '/users/authentication') {
         return next();
     }
+
     const cookieKey = config.auth.cookieKey;
 
     const sessionId = ctx.cookies.get(cookieKey);
