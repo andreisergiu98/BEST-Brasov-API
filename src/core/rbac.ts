@@ -1,6 +1,6 @@
 import Koa from 'koa';
 
-interface Role {
+export interface Role {
     id: string;
     level: number;
     canBePromotedBy: string[];
@@ -41,46 +41,46 @@ export class RBAC {
         };
     }
 
-    static roles: { [key: string]: Role } = {
+    static roles = {
         superAdmin: {
             id: 'super_admin',
             level: -1,
             canBePromotedBy: [],
-        },
+        } as Role,
         admin: {
             id: 'admin',
             level: 0,
             canBePromotedBy: [],
-        },
+        } as Role,
         mdv: {
             id: 'mdv',
             level: 25,
             canBePromotedBy: ['admin'],
-        },
+        } as Role,
         moderator: {
             id: 'moderator',
             level: 50,
             canBePromotedBy: ['admin', 'mdv'],
-        },
+        } as Role,
         coordinator: {
             id: 'coordinator',
             level: 75,
             canBePromotedBy: ['admin', 'mdv'],
-        },
+        } as Role,
         teamMember: {
             id: 'core_team_member',
             level: 100,
             canBePromotedBy: ['admin', 'mdv', 'moderator', 'coordinator'],
-        },
+        } as Role,
         user: {
             id: 'user',
             level: 150,
             canBePromotedBy: ['admin', 'mdv', 'moderator', 'coordinator'],
-        },
+        } as Role,
         guest: {
             id: 'guest',
             level: 1000,
             canBePromotedBy: ['admin'],
-        },
+        } as Role,
     };
 }
