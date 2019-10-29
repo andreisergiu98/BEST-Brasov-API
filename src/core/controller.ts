@@ -34,49 +34,48 @@ export interface ControllerOptions {
 }
 
 export class Controller<T> {
-    protected readonly router = Router();
+    private readonly router = Router();
     // tslint:disable-next-line:variable-name
     private readonly Resource: new (x?: T) => T;
     private readonly excludedFields: string[] = [];
-    private readonly options: ControllerOptions;
+
+    // private readonly options: ControllerOptions;
 
     constructor(resource: new (x?: T) => T, options: ControllerOptions = {}) {
         this.Resource = resource;
-        this.options = options;
 
         if (options.read && options.read.excludeFields) {
             this.excludedFields = options.read.excludeFields;
         }
 
-        const beforeRead: Koa.Middleware[] = this.createMiddlewares(this.options.read);
-        const beforeCreate: Koa.Middleware[] = this.createMiddlewares(this.options.create);
-        const beforeUpdate: Koa.Middleware[] = this.createMiddlewares(this.options.update);
-        const beforeDelete: Koa.Middleware[] = this.createMiddlewares(this.options.delete);
+        this.createRouter(options);
+        this.extendRouter(this.router);
+    }
 
-        if (!this.isDisabled(this.options.read)) {
+    private createRouter = (options: ControllerOptions) => {
+        const beforeRead: Koa.Middleware[] = this.createMiddlewares(options.read);
+        const beforeCreate: Koa.Middleware[] = this.createMiddlewares(options.create);
+        const beforeUpdate: Koa.Middleware[] = this.createMiddlewares(options.update);
+        const beforeDelete: Koa.Middleware[] = this.createMiddlewares(options.delete);
+
+        if (!this.isDisabled(options.read)) {
             this.router.get('/:id', ...beforeRead, this.getById);
             this.router.get('/', ...beforeRead, this.getAll);
         }
-        if (!this.isDisabled(this.options.create)) {
+        if (!this.isDisabled(options.create)) {
             this.router.post('/', ...beforeCreate, this.create);
         }
-        if (!this.isDisabled(this.options.update)) {
+        if (!this.isDisabled(options.update)) {
             this.router.put('/:id', ...beforeUpdate, this.updateOne);
             this.router.put('/', ...beforeUpdate, this.updateMany);
         }
-        if (!this.isDisabled(this.options.read)) {
+        if (!this.isDisabled(options.read)) {
             this.router.delete('/:id', ...beforeDelete, this.delete);
         }
-    }
+    };
 
-    private isDisabled = (options?: MethodOptions) => {
-        if (!options) {
-            return false;
-        }
-        if (options.disabled === undefined) {
-            return false;
-        }
-        return options.disabled;
+    protected extendRouter = (router: Router.Instance) => {
+
     };
 
     private createMiddlewares = (options: MethodOptions = {}) => {
@@ -92,6 +91,16 @@ export class Controller<T> {
             }
         }
         return middlewares;
+    };
+
+    private isDisabled = (options?: MethodOptions) => {
+        if (!options) {
+            return false;
+        }
+        if (options.disabled === undefined) {
+            return false;
+        }
+        return options.disabled;
     };
 
     get routes() {

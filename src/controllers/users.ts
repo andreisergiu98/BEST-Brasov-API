@@ -1,4 +1,5 @@
 import Koa from 'koa';
+import Router from 'koa-router-find-my-way';
 
 import {config} from '../config';
 
@@ -11,9 +12,12 @@ import {User} from '../models/user';
 export class UsersController extends Controller<User> {
     constructor() {
         super(User);
-        this.router.get('/authentication', this.verifySession);
-        this.router.post('/authentication', this.createSession);
     }
+
+    protected extendRouter = (router: Router.Instance) => {
+        router.get('/authentication', this.verifySession);
+        router.post('/authentication', this.createSession);
+    };
 
     private verifySession = async (ctx: Koa.Context) => {
         ctx.body = ctx.state.user;
