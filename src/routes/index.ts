@@ -8,19 +8,19 @@ import {EntitiesController} from '../controllers/entities';
 import {MeetingsController} from '../controllers/meetings';
 import {CommentsController} from '../controllers/comments';
 
-const app = new Koa();
+const router = new Koa();
 
 const users = new UsersController();
 const entities = new EntitiesController();
 const meetings = new MeetingsController();
 const comments = new CommentsController();
 
-app.use(authentication);
+router.use(authentication);
 
-app.use(mount('/users', users.routes));
-app.use(mount('/entities', entities.routes));
-app.use(mount('/entities/categories', entities.categories.routes));
-app.use(mount('/meetings', meetings.routes));
-app.use(mount('/comments', comments.routes));
+router.use(mount('/users', users.routes));
+router.use(mount('/entities/categories', entities.categories.routes));
+router.use(mount('/entities', entities.routes));
+router.use(mount('/meetings', meetings.routes));
+router.use(mount('/comments', comments.routes));
 
-export const routes = mount(app);
+export const routes = mount(router);
