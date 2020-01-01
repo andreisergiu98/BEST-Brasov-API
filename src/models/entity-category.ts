@@ -1,5 +1,6 @@
 import {Entity as TypeormEntity, Column, PrimaryGeneratedColumn, ManyToMany, BaseEntity} from 'typeorm';
 import {Entity} from './entity';
+import {initArray} from '../utils/db';
 
 @TypeormEntity()
 export class EntityCategory extends BaseEntity {
@@ -17,6 +18,7 @@ export class EntityCategory extends BaseEntity {
         if (category) {
             this.id = category.id;
             this.name = category.name;
+            this.entities = initArray(Entity, category.entities);
         }
     }
 }

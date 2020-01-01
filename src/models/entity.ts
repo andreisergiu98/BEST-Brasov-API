@@ -6,8 +6,11 @@ import {
     JoinTable,
     OneToMany, BaseEntity,
 } from 'typeorm';
-import {EntityCategory} from './entity-category';
+
 import {Comment} from './comment';
+import {EntityCategory} from './entity-category';
+
+import {initArray} from '../utils/db';
 
 @TypeormEntity()
 export class Entity extends BaseEntity {
@@ -56,7 +59,8 @@ export class Entity extends BaseEntity {
             this.numberOfCalls = entity.numberOfCalls;
             this.phoneNumbers = entity.phoneNumbers;
             this.emailAddresses = entity.emailAddresses;
-            this.categories = entity.categories;
+            this.categories = initArray(EntityCategory, entity.categories) || [];
+            this.comments = initArray(Comment, entity.comments);
         }
     }
 }

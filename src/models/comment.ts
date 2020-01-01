@@ -1,23 +1,26 @@
 import {BaseEntity, Column, Entity as TypeormEntity, JoinColumn, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
+
 import {User} from './user';
 import {Entity} from './entity';
+
+import {initOne} from '../utils/db';
 
 @TypeormEntity()
 export class Comment extends BaseEntity {
     @PrimaryGeneratedColumn()
     id?: number;
 
-    @Column('integer')
-    userId!: number;
-
-    @Column({nullable: true},)
-    entityId?: number;
-
     @Column('text')
     text!: string;
 
     @Column('timestamp')
     date!: Date;
+
+    @Column('integer')
+    userId!: number;
+
+    @Column({nullable: true})
+    entityId?: number;
 
     @ManyToOne(() => User)
     @JoinColumn({name: 'user_id'})
@@ -38,6 +41,8 @@ export class Comment extends BaseEntity {
             this.date = comment.date;
             this.userId = comment.userId;
             this.entityId = comment.entityId;
+            this.user = initOne(User, comment.user);
+            this.entity = initOne(Entity, comment.entity);
         }
     }
 }
