@@ -5,18 +5,16 @@ import {Meeting} from '../models/meeting';
 
 export class MeetingsController extends Controller<Meeting> {
     constructor() {
-        super(Meeting, meetingOptions);
+        super(Meeting, {
+            create: {
+                access: RBAC.roles.moderator,
+            },
+            update: {
+                access: RBAC.roles.moderator,
+            },
+            delete: {
+                access: RBAC.roles.admin,
+            },
+        });
     }
 }
-
-const meetingOptions: ControllerOptions = {
-    create: {
-        access: RBAC.roles.moderator,
-    },
-    update: {
-        access: RBAC.roles.moderator,
-    },
-    delete: {
-        access: RBAC.roles.admin,
-    },
-};

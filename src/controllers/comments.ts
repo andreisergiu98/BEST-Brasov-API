@@ -1,15 +1,9 @@
 import Koa from 'koa';
 
 import {RBAC} from '../core/rbac';
-import {Controller, ControllerOptions} from '../core/controller';
+import {Controller} from '../core/controller';
 
 import {Comment} from '../models/comment';
-
-export class CommentsController extends Controller<Comment> {
-    constructor() {
-        super(Comment, commentsOptions);
-    }
-}
 
 async function tagUser(ctx: Koa.Context) {
     if (ctx.request.body) {
@@ -18,14 +12,18 @@ async function tagUser(ctx: Koa.Context) {
     }
 }
 
-const commentsOptions: ControllerOptions = {
-    create: {
-        preHooks: tagUser,
-    },
-    update: {
-        disabled: true,
-    },
-    delete: {
-        access: RBAC.roles.admin,
-    },
-};
+export class CommentsController extends Controller<Comment> {
+    constructor() {
+        super(Comment, {
+            create: {
+                preHooks: tagUser,
+            },
+            update: {
+                disabled: true,
+            },
+            delete: {
+                access: RBAC.roles.admin,
+            },
+        });
+    }
+}

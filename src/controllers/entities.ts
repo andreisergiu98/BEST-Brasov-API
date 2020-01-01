@@ -5,21 +5,17 @@ import {Entity} from '../models/entity';
 import {EntityCategory} from '../models/entity-category';
 
 export class EntitiesController extends Controller<Entity> {
-    categories = new Controller(EntityCategory, categoriesOptions);
+    categories = new Controller(EntityCategory, {
+        delete: {
+            access: RBAC.roles.admin,
+        },
+    });
 
     constructor() {
-        super(Entity, entityOptions);
+        super(Entity, {
+            delete: {
+                access: RBAC.roles.moderator,
+            },
+        });
     }
 }
-
-const entityOptions = {
-    delete: {
-        access: RBAC.roles.moderator,
-    },
-};
-
-const categoriesOptions = {
-    delete: {
-        access: RBAC.roles.admin,
-    },
-};

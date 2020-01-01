@@ -18,9 +18,12 @@ const comments = new CommentsController();
 router.use(authentication);
 
 router.use(mount('/users', users.routes));
+
 router.use(mount('/entities/categories', entities.categories.routes));
 router.use(mount('/entities', entities.routes));
+
 router.use(mount('/meetings', meetings.routes));
+
 router.use(mount('/comments', comments.routes));
 
 export const routes = mount(router);
