@@ -6,7 +6,7 @@
   "env": {
     "NODE_ENV": "development",
     "PORT": 8081,
-    "POSTGRES": "postgres://root:root@db/bestbrasov",
+    "DB": "postgres://root:root@db/bestbrasov",
     "REDIS": "redis://redis:6379"
   }
 }

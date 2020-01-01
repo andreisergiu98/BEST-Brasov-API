@@ -3,7 +3,7 @@ import cookies from 'cookies';
 import typeorm from 'typeorm';
 
 import {time} from './utils/time';
-import {CustomNamingStrategy} from './utils/db';
+import {snakeCaseNamingStrategy} from './utils/db';
 
 const isProduction: boolean = process.env.NODE_ENV === 'production';
 
@@ -27,11 +27,11 @@ export const config = {
     postgres: {
         name: 'postgres',
         type: 'postgres',
-        url: process.env.POSTGRES,
+        url: process.env.DB,
         synchronize: !isProduction,
         logging: false,
         charset: 'utf8mb4',
-        namingStrategy: new CustomNamingStrategy(),
+        namingStrategy: snakeCaseNamingStrategy,
         entities: [`${__dirname}/models/*.${isProduction ? 'js' : 'ts'}`],
     } as typeorm.ConnectionOptions,
     redis: {
