@@ -7,15 +7,6 @@ export interface Role {
 }
 
 export class RBAC {
-    static validateRole(roleId: string): boolean {
-        for (const [key, value] of Object.entries(RBAC.roles)) {
-            if (value.id === roleId) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     static getRoleBy(roleId: string): Role | undefined {
         for (const [key, value] of Object.entries(RBAC.roles)) {
             if (value.id === roleId) {
@@ -37,7 +28,7 @@ export class RBAC {
                 return;
             }
 
-            await next();
+            return next();
         };
     }
 
