@@ -3,7 +3,7 @@ version: "3.7"
 services:
   node:
     container_name: BEST_api_node
-    image: node:12-alpine
+    image: node:12-buster-slim
     working_dir: /home/node/app/
     ports:
       - 8081:8081
@@ -13,7 +13,6 @@ services:
       - ./tsconfig.json:/home/node/app/tsconfig.json
       - ./nodemon.json:/home/node/app/nodemon.json
       - ./node_modules:/home/node/app/node_modules
-      - ./development:/home/node/app/development
     tty: true
     command: yarn run nodemon
 
@@ -26,7 +25,7 @@ services:
       POSTGRES_PASSWORD: root
       POSTGRES_DB: bestbrasov
     volumes:
-      - ./development/db:/docker-entrypoint-initdb.d/
+      - ./docker/dumps:/docker-entrypoint-initdb.d/
     ports:
       - 5432:5432
 
