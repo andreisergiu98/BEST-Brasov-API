@@ -11,17 +11,16 @@ export class CommentsController extends Controller<Comment> {
     }
 }
 
-function tagUser(ctx: Koa.Context, next: Function) {
+async function tagUser(ctx: Koa.Context) {
     if (ctx.request.body) {
         ctx.request.body.userId = ctx.state.user.id;
         ctx.request.body.date = new Date();
     }
-    return next();
 }
 
 const commentsOptions: ControllerOptions = {
     create: {
-        pre: tagUser,
+        preHooks: tagUser,
     },
     update: {
         disabled: true,

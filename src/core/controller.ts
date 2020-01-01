@@ -16,8 +16,12 @@ interface ParsedQuery {
     offset?: string;
 }
 
+type Hook = (ctx: Koa.Context) => Promise<void>;
+
 interface MethodOptions {
-    pre?: Koa.Middleware | Koa.Middleware[];
+    middlewares?: Koa.Middleware | Koa.Middleware[];
+    preHooks?: Hook | Hook[];
+    postHooks?: Hook | Hook[];
     access?: Role;
     disabled?: boolean;
 }
@@ -41,8 +45,6 @@ export class Controller<T> {
     private readonly excludedFields: string[] = [];
     private routesCreated = false;
 
-    // private readonly options: ControllerOptions;
-
     constructor(resource: new (x?: T) => T, options: ControllerOptions = {}) {
         this.Resource = resource;
 
@@ -52,7 +54,7 @@ export class Controller<T> {
         this.options = options;
     }
 
-    private createRouter = (options: ControllerOptions) => {
+    private createRouter(options: ControllerOptions) {
         const beforeRead: Koa.Middleware[] = this.createMiddlewares(options.read);
         const beforeCreate: Koa.Middleware[] = this.createMiddlewares(options.create);
         const beforeUpdate: Koa.Middleware[] = this.createMiddlewares(options.update);
@@ -72,28 +74,40 @@ export class Controller<T> {
         if (!this.isDisabled(options.read)) {
             this.router.delete('/:id', ...beforeDelete, this.delete);
         }
-    };
+    }
 
     protected extendRouter = (router: Router.Instance) => {
 
     };
 
-    private createMiddlewares = (options: MethodOptions = {}) => {
+    private createMiddlewares(options: MethodOptions = {}) {
         let middlewares: Koa.Middleware[] = [];
         if (options.access) {
             middlewares.push(RBAC.restrictAccess(options.access));
         }
-        if (options.pre) {
-            if (Array.isArray(options.pre)) {
-                middlewares = middlewares.concat(options.pre);
+        if (options.middlewares) {
+            if (Array.isArray(options.middlewares)) {
+                middlewares = middlewares.concat(options.middlewares);
             } else {
-                middlewares.push(options.pre);
+                middlewares.push(options.middlewares);
             }
         }
         return middlewares;
-    };
+    }
 
-    private isDisabled = (options?: MethodOptions) => {
+    private async handleHooks(ctx: Koa.Context, hooks?: Hook | Hook[]) {
+        if (!hooks) return;
+
+        if (Array.isArray(hooks)) {
+            for (const hook of hooks) {
+                await hook(ctx);
+            }
+            return;
+        }
+        await hooks(ctx);
+    }
+
+    private isDisabled(options?: MethodOptions) {
         if (!options) {
             return false;
         }
@@ -101,7 +115,7 @@ export class Controller<T> {
             return false;
         }
         return options.disabled;
-    };
+    }
 
     get routes() {
         if (!this.routesCreated) {
@@ -113,6 +127,10 @@ export class Controller<T> {
     }
 
     protected getAll = async (ctx: Koa.Context) => {
+        if (this.options.read) {
+            await this.handleHooks(ctx, this.options.read.preHooks);
+        }
+
         const query = parseDatabaseQuery(ctx.query, this.excludedFields);
         try {
             ctx.body = await db.manager.find(this.Resource, {
@@ -126,9 +144,17 @@ export class Controller<T> {
             ctx.throw(400, e.message);
         }
         ctx.status = 200;
+
+        if (this.options.read) {
+            await this.handleHooks(ctx, this.options.read.postHooks);
+        }
     };
 
     protected getById = async (ctx: Koa.Context) => {
+        if (this.options.read) {
+            await this.handleHooks(ctx, this.options.read.preHooks);
+        }
+
         const id = Number(ctx.params.id);
         const query = parseDatabaseQuery(ctx.query, this.excludedFields);
 
@@ -154,9 +180,17 @@ export class Controller<T> {
 
         ctx.body = item;
         ctx.status = 200;
+
+        if (this.options.read) {
+            await this.handleHooks(ctx, this.options.read.postHooks);
+        }
     };
 
     protected create = async (ctx: Koa.Context) => {
+        if (this.options.create) {
+            await this.handleHooks(ctx, this.options.create.preHooks);
+        }
+
         const body = ctx.request.body as any | undefined;
 
         if (!body) {
@@ -171,9 +205,17 @@ export class Controller<T> {
         } catch (e) {
             ctx.throw(400, e.message);
         }
+
+        if (this.options.create) {
+            await this.handleHooks(ctx, this.options.create.postHooks);
+        }
     };
 
     protected updateOne = async (ctx: Koa.Context) => {
+        if (this.options.update) {
+            await this.handleHooks(ctx, this.options.update.preHooks);
+        }
+
         const id = Number(ctx.params.id);
         const body = ctx.request.body as any | undefined;
 
@@ -193,10 +235,18 @@ export class Controller<T> {
         } catch (e) {
             ctx.throw(400, e.message);
         }
+
+        if (this.options.update) {
+            await this.handleHooks(ctx, this.options.update.postHooks);
+        }
     };
 
     protected updateMany = async (ctx: Koa.Context) => {
-        const body = ctx.request.body;
+        if (this.options.update) {
+            await this.handleHooks(ctx, this.options.update.preHooks);
+        }
+
+        const body = ctx.request.body as any | undefined;
 
         if (!body) {
             ctx.throw(400, 'Payload is missing');
@@ -215,9 +265,17 @@ export class Controller<T> {
         } catch (e) {
             ctx.throw(400, e.message);
         }
+
+        if (this.options.update) {
+            await this.handleHooks(ctx, this.options.update.postHooks);
+        }
     };
 
     protected delete = async (ctx: Koa.Context) => {
+        if (this.options.delete) {
+            await this.handleHooks(ctx, this.options.delete.preHooks);
+        }
+
         const id = Number(ctx.params.id);
         if (isNaN(id)) {
             ctx.throw(400, 'Invalid id');
@@ -228,6 +286,10 @@ export class Controller<T> {
             ctx.throw(404);
         }
         ctx.status = 204;
+
+        if (this.options.delete) {
+            await this.handleHooks(ctx, this.options.delete.postHooks);
+        }
     };
 }
 
