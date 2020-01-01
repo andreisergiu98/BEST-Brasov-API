@@ -16,19 +16,17 @@ export interface SessionData {
     id: number;
     role: string;
     pttl: number;
+    session: string;
 }
 
 class SessionStorage extends RedisClient {
-    readonly separator = '#';
-
     private readonly exp = config.auth.maxAge;
     private readonly tokenSize = config.auth.tokenSize;
-    private readonly sessionNamespace = 'session:';
-    private readonly userNamespace = 'user:';
 
     client!: SessionRedis;
 
     async onConnected() {
+        const userNamespace = this.getUserKey('');
         this.client.defineCommand('getUser', {
             numberOfKeys: 1,
             // language=Lua
@@ -36,7 +34,10 @@ class SessionStorage extends RedisClient {
                 local id = redis.call('get', KEYS[1])
                 if id == false then return false end
                 local ttl = redis.call('pttl', KEYS[1])
-                return { redis.call('hmget', 'user:' .. id, 'id', 'role'), ttl }
+                return { 
+                    redis.call('hmget', '${userNamespace}' .. id, 
+                    'id', 'role'
+                    ), ttl}
             `,
         });
     }
@@ -48,27 +49,28 @@ class SessionStorage extends RedisClient {
         if (!res) return;
         const [[id, role], ttl] = res;
 
-        if (!id || !role) return;
+        if (!id) return;
 
         return {
             id: Number(id),
-            pttl: Number(ttl),
             role,
+            session: sessionId,
+            pttl: Number(ttl),
         };
     }
 
     async createSession(user: User, useragent: string) {
-        const sessionId = (await randomBytes(this.tokenSize)).toString('base64');
+        const sessionId = user.id + ':' + (await randomBytes(this.tokenSize)).toString('base64');
 
-        const data = this.buildData(user);
         const userKey = this.getUserKey(user.id);
+        const sessionData = this.buildData(user);
         const sessionKey = this.getSessionKey(sessionId);
 
-        await this.client.hmset(userKey, data);
+        await this.client.hmset(userKey, sessionData);
         await this.client.pexpire(userKey, this.exp);
         await this.client.set(sessionKey, user.id, 'px', this.exp);
 
-        return sessionId;
+        return {sessionId, sessionData};
     }
 
     async extendSession(sessionId: string, userId: number) {
@@ -81,6 +83,10 @@ class SessionStorage extends RedisClient {
     async updateData(user: User) {
         const key = this.getUserKey(user.id);
         const data = this.buildData(user);
+
+        const exists = this.client.exists(key);
+        if (!exists) return;
+
         await this.client.hmset(key, data);
         await this.client.pexpire(key, this.exp);
     }
@@ -89,17 +95,20 @@ class SessionStorage extends RedisClient {
         return this.client.unlink(this.getSessionKey(sessionId));
     }
 
-    async deleteAllSessions(sessionIds: string[]) {
-        const keys = sessionIds.map(id => this.getSessionKey(id));
+    async deleteAllSessions(userId: number) {
+        const keys = await this.scanStream({
+            match: this.getSessionKey(userId + ':') + '*',
+        });
+        if (keys.length === 0) return;
         return this.client.unlink(...keys);
     }
 
     private getUserKey(userId: number | string) {
-        return this.userNamespace + userId;
+        return 'user:' + userId;
     }
 
     private getSessionKey(sessionId: string) {
-        return this.sessionNamespace + sessionId;
+        return 'session:' + sessionId;
     }
 
     private buildData(user: User) {
@@ -110,4 +119,4 @@ class SessionStorage extends RedisClient {
     }
 }
 
-export const sessionStorage = new SessionStorage(config.redis.databases.sessionStorage);
+export const sessionStorage = new SessionStorage(config.auth.database);

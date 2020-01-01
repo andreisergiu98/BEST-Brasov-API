@@ -1,27 +1,28 @@
 import Redis, {ScanStreamOption} from 'ioredis';
-import {config} from '../config';
 
 export class RedisClient {
-    private readonly db!: number;
+    private readonly url: string;
+    private readonly name: string;
     client!: Redis.Redis;
 
-    constructor(db: number) {
-        this.db = db;
+    constructor({url, name}: { url: string, name: string }) {
+        this.url = url;
+        this.name = name;
     }
 
     async connect() {
         return new Promise((resolve, reject) => {
-            this.client = new Redis(config.redis.url + '/' + this.db);
+            this.client = new Redis(this.url);
 
-            console.log(`Connecting to redis:${this.db}...`);
+            console.log(`Connecting to ${this.name}...`);
 
             this.client.on('error', e => {
                 reject(e);
             });
 
             this.client.on('ready', async () => {
-                console.log(`Connected to redis:${this.db}!\n`);
                 await this.onConnected();
+                console.log(`Connected to ${this.name}!\n`);
                 resolve();
             });
         });

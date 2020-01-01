@@ -23,6 +23,10 @@ export const config = {
             overwrite: true,
             maxAge: time.daysToMilliseconds(7),
         } as cookies.SetOption,
+        database: {
+            name: 'session-storage',
+            url: process.env.SESSION_STORAGE as string,
+        },
     },
     postgres: {
         name: 'postgres',
@@ -36,9 +40,6 @@ export const config = {
     } as typeorm.ConnectionOptions,
     redis: {
         url: process.env.REDIS,
-        databases: {
-            sessionStorage: 0,
-        },
     },
     node: {
         port: process.env.PORT || 8081,

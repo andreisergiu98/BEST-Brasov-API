@@ -39,13 +39,14 @@ export class UsersController extends Controller<User> {
             return;
         }
 
-        const authKey = await sessionStorage.createSession(user, ctx.headers['user-agent']);
-        ctx.cookies.set(config.auth.cookieKey, authKey, config.auth.cookieOptions);
-        ctx.status = 204;
+        const {sessionId, sessionData} = await sessionStorage.createSession(user, ctx.headers['user-agent']);
+        ctx.cookies.set(config.auth.cookieKey, sessionId, config.auth.cookieOptions);
+        ctx.body = sessionData;
+        ctx.status = 200;
     };
 
     private deleteSession = async (ctx: Koa.Context) => {
-        // TODO
+        await sessionStorage.deleteSession(ctx.state.user.session);
         ctx.status = 204;
     };
 
